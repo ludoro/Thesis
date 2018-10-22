@@ -1,0 +1,92 @@
+\documentclass[11pt,a4paper,oneside,titlepage,openright]{book}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\pagestyle{empty}
+\usepackage[utf8]{inputenc}
+\usepackage{titling}
+
+
+%%ENVIRONMENT FOR ABSTRACT
+\newenvironment{abstract}
+{\cleardoublepage\null \begin{center}
+\bfseries \abstractname \end{center}}
+	{\vfill\null}
+	
+%%DEFINITION FOR FIRST PAGE
+\makeatletter
+
+\renewcommand{\maketitle}{%
+  \let\footnotesize\small
+  \let\footnoterule\relax
+  \let\footnote\thanks
+  \chapter*{\vspace{-3cm}\makebox[\linewidth]{\@title}}
+  \begin{center}
+    \includegraphics[width=5cm]{logo}
+    \vskip\dimexpr 7em-40\p@\relax%
+    {\large \lineskip 0.4em%
+     \textsc{Bachelor of Science in Mathematical Engineering}\\
+     \vskip 0.4cm
+     \Large\textsc{Bachelor degree thesis}	\\
+     \vskip 1cm
+     \Huge\textbf{Parallelisation of matrix vector product}
+     \begin{tabular}[t]{c}  \@author \end{tabular}\par}%
+     \vskip 3cm
+    \noindent
+    \parbox[t]{.5\textwidth}{\raggedright
+    \large{Supervisor:}\\
+    \large{Prof. Stefano Berrone}}
+    \hfill
+    \parbox[t]{.3\textwidth}{\raggedleft
+    \large Candidate:\\
+    \large{Ludovico Bessi}
+    }%
+    \vskip 10.7em%
+    {\large \@date \par}%
+  \end{center}\par
+  \@thanks
+  \vfill\null\setcounter{footnote}{0}
+  \thispagestyle{empty}\addtocounter{page}{-1}
+}
+\makeatother
+
+\begin{document} 
+\title{POLITECNICO DI TORINO}
+\author{}
+\date{July 2019}
+\maketitle
+
+%%DEDICA
+\begin{flushright}
+\null\vspace{\stretch{1}}
+\textit{DEDICA QUI}
+\vspace{\stretch{2}}\null
+\end{flushright}
+
+
+%%ABSTRACT
+\begin{abstract}
+aa\\
+bb\\
+cc\\
+\end{abstract}
+
+\tableofcontents
+
+%%CAPITOLO 1
+\chapter{Introduction}
+This is the introduction bla bla bla. 
+
+
+
+
+
+
+%%CAPITOLO 2
+\chapter{LIKWID}
+LIKE I KNOW WHAT I AM DOING 
+\end{document}
