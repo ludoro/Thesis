@@ -2,8 +2,15 @@
 #include <stdio.h>
 
 int main(int argc, char* argv[]){
+  // I suppose that I know the filenames and the number of rows
   int n;
-  n = 50;
+  n = 3;
+
+  FILE* input_1;
+  FILE* input_2;
+
+  input_1 = fopen("matrix.txt", "r");
+  input_2 = fopen("vector.txt", "r");
 
   //Matrix allocation
   double **matrix = (double **)malloc(n * sizeof(double*));
@@ -18,13 +25,20 @@ int main(int argc, char* argv[]){
   double* result = (double *)malloc(n*sizeof(double*));
 
 
-  //Creating vector and matrix of 1's for testing
+  //Creating vector and matrix of 1's for testing ( I will take those from file)
   for(int i = 0; i < n; i++){
-    vector[i] = 1;
+    if(!fscanf(input_2, "%lf", &vector[i])){
+      break;
+    }
     for(int j = 0; j < n; j++){
-      matrix[i][j] = 1;
+      if (!fscanf(input_1, "%lf", &matrix[i][j]))
+           break;
     }
   }
+
+
+  fclose(input_1);
+  fclose(input_2);
 
   //Computing multiplication Matrix*vector
   for(int i = 0; i < n; i++){

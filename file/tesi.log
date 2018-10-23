@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.10.22)  22 OCT 2018 21:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.10.22)  23 OCT 2018 19:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -261,12 +261,14 @@ Chapter 1.
 Chapter 2.
 [5
 
+] [6
+
 ] (./tesi.aux) ) 
 Here is how much of TeX's memory you used:
- 2855 strings out of 492649
- 38555 string characters out of 6129621
- 108386 words of memory out of 5000000
- 6691 multiletter control sequences out of 15000+600000
+ 2856 strings out of 492649
+ 38563 string characters out of 6129621
+ 108344 words of memory out of 5000000
+ 6692 multiletter control sequences out of 15000+600000
  14902 words of font info for 35 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,4n,43p,271b,190s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -279,10 +281,10 @@ x2074.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfbx2
 pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pf
 b></usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb>
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/cm-super/sfti1095.pfb>
-Output written on tesi.pdf (6 pages, 337740 bytes).
+Output written on tesi.pdf (7 pages, 343490 bytes).
 PDF statistics:
- 59 PDF objects out of 1000 (max. 8388607)
- 40 compressed objects within 1 object stream
+ 64 PDF objects out of 1000 (max. 8388607)
+ 44 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
