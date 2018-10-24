@@ -1,0 +1,7 @@
+Processore: 2,3 GHz Intel core i5 ( con TurboBoost fino a 3.6 GHz)
+Numero di core: 2
+Frequenza di clock: ho usato il comando hw.cpufrequency con risultato 2300000000 (?), Dirie che sono 2,3 GHz quindi OK, già trovato prima 
+RAM: 16 GB 2133MHz LPDDR3
+Livelli e dimensioni cache:
+
+https://ark.intel.com/products/97535/Intel-Core-i5-7360U-Processor-4M-Cache-up-to-3-60-GHz-
