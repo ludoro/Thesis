@@ -1,16 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <time.h>
 int main(int argc, char* argv[]){
   // I suppose that I know the filenames and the number of rows
+  clock_t begin = clock();
   int n;
-  n = 3;
-
+  n = 1000;
+  //double tmp;
   FILE* input_1;
   FILE* input_2;
 
-  input_1 = fopen("matrix.txt", "r");
-  input_2 = fopen("vector.txt", "r");
+  input_1 = fopen("matrix_from_matlab.txt", "r");
+  input_2 = fopen("vector_from_matlab.txt", "r");
 
   //Matrix allocation
   double **matrix = (double **)malloc(n * sizeof(double*));
@@ -27,12 +28,9 @@ int main(int argc, char* argv[]){
 
   //Creating vector and matrix of 1's for testing ( I will take those from file)
   for(int i = 0; i < n; i++){
-    if(!fscanf(input_2, "%lf", &vector[i])){
-      break;
-    }
+    fscanf(input_2, "%lf", &vector[i]);
     for(int j = 0; j < n; j++){
-      if (!fscanf(input_1, "%lf", &matrix[i][j]))
-           break;
+      fscanf(input_1, "%lf", &matrix[i][j]);
     }
   }
 
@@ -41,17 +39,24 @@ int main(int argc, char* argv[]){
   fclose(input_2);
 
   //Computing multiplication Matrix*vector
+  // This is my "Kernel", which is equivalent to:
+  // result[i] = result[i] + matrix[i][j]*vector[j];
+  // E' equivalente a esempio mostrato oggi
   for(int i = 0; i < n; i++){
     result[i] = 0;
+    //tmp = result[i];
     for(int j = 0; j < n; j++){
       result[i] += matrix[i][j]*vector[j];
+      //result[i] = tmp;
     }
   }
 
   //Printing result
+  /*
   for(int i = 0; i < n; i++){
     printf("%f\n", result[i]);
   }
+  */
 
   //Free the matrix
   for(int i =  0; i < n; i++){
@@ -64,6 +69,10 @@ int main(int argc, char* argv[]){
 
   //Free the result
   free(result);
+
+  clock_t end = clock();
+  double delta = end - begin;
+  printf("%f\n", delta);
 
   return 0;
 }

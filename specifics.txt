@@ -7,7 +7,8 @@
  
 RAM: 16 GB 2133MHz LPDDR3
 
-Livelli e dimensioni cache: 4MB (https://en.wikichip.org/wiki/intel/microarchitectures/kaby_lake)
+Livelli e dimensioni cache: 
+https://en.wikichip.org/wiki/intel/microarchitectures/kaby_lake
 
 https://ark.intel.com/products/97535/Intel-Core-i5-7360U-Processor-4M-Cache-up-to-3-60-GHz-
 
