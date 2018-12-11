@@ -1,0 +1,128 @@
+\documentclass[11pt,a4paper,oneside,titlepage,openright]{book}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\pagestyle{empty}
+\usepackage[utf8]{inputenc}
+\usepackage{titling}
+\usepackage{listings}
+
+%%ENVIRONMENT FOR ABSTRACT
+\newenvironment{abstract}
+{\cleardoublepage\null \begin{center}
+\bfseries \abstractname \end{center}}
+	{\vfill\null}
+	
+%%DEFINITION FOR FIRST PAGE
+\makeatletter
+
+\renewcommand{\maketitle}{%
+  \let\footnotesize\small
+  \let\footnoterule\relax
+  \let\footnote\thanks
+  \chapter*{\vspace{-3cm}\makebox[\linewidth]{\@title}}
+  \begin{center}
+    \includegraphics[width=5cm]{logo}
+    \vskip\dimexpr 7em-40\p@\relax%
+    {\large \lineskip 0.4em%
+     \textsc{Bachelor of Science in Mathematical Engineering}\\
+     \vskip 0.4cm
+     \Large\textsc{Bachelor degree thesis}	\\
+     \vskip 1cm
+     \Huge\textbf{Analysis of matrix vector product}
+     \begin{tabular}[t]{c}  \@author \end{tabular}\par}%
+     \vskip 3cm
+    \noindent
+    \parbox[t]{.5\textwidth}{\raggedright
+    \large{Supervisor:}\\
+    \large{Prof. Stefano Berrone\\ Dr. Federico Tesser}}
+    \hfill
+    \parbox[t]{.3\textwidth}{\raggedleft
+    \large Candidate:\\
+    \large{Ludovico Bessi}
+    }%
+    \vskip 10.7em%
+    {\large \@date \par}%
+  \end{center}\par
+  \@thanks
+  \vfill\null\setcounter{footnote}{0}
+  \thispagestyle{empty}\addtocounter{page}{-1}
+}
+\makeatother
+
+\begin{document} 
+\title{POLITECNICO DI TORINO}
+\author{}
+\date{July 2019}
+\maketitle
+
+%%DEDICA
+\begin{flushright}
+\null\vspace{\stretch{1}}
+\textit{Ai miei genitori}
+\vspace{\stretch{2}}\null
+\end{flushright}
+
+
+%%ABSTRACT
+\begin{abstract}
+We made a comparison between a naive implementation of the matrix vector product and the Eigen's library implementation.
+We found out that on equal hardware power our code runs FASTEERR
+\end{abstract}
+
+\tableofcontents
+
+%%CAPITOLO 1
+\chapter{Introduction}
+Let $A$ be a $n\times n$ dense matrix and v be a vector of $n$ entries. We define the kernel as the following operation: 
+$$ result[i] = result[i] + A[i,j]*vector[i]$$. 
+We used LIKIWID to profile the code and gather insights as well as stream. 
+We went through different implementation of our kernel to get to the theoretical limit of our implementation using one core.
+\begin{itemize}
+\item{Naive implementation}
+\item{Using a temporary variable to speed up cache lookup}
+\item{Loop unrolling to exploit sum and multiplication pipelines}
+\end{itemize}
+
+With the last implementation, we managed to get to the theoretical limit. After that, we adressed scalability. That is, we looked at how our kernel worked in parallel on the supermegacomputer of politenico (inserire specifiche) 
+
+
+
+%%CAPITOLO 2
+\chapter{Naive implementation}
+At first we started with the simplest thing one could think of:
+\lstinputlisting{naive_without_tmp.c}
+
+In this case: blablabla calcoli su P_peak computational intesity e grafico 
+
+\chapter{Using a temporary variable to speed up cache lookup}
+
+\chapter{Loop unrolling to exploit sum and multiplication pipelines}
+
+\chapter{Parallel computations}
+
+%%BIBLIOGRAPHY
+\begin{thebibliography}{1}
+\bibitem{likwid} 
+Jan Treibig, Georg Hager, Gerhard Wellein, \textit{LIKWID: A lightweight performance-oriented tool suite for x86 multicore environments}. 
+\bibitem{openmp}
+Mark bull, \textit{A Short Introduction to OpenMP}
+\bibitem{eigen}
+Ga\"{e}l Guennebaud, Beno\^{i}t Jacob, \textit{Eigen v3}
+\bibitem{roofmodel}
+Samuel Williams, Andrew Waterman, David Patterson, \textit{An insightful visual performance model for floating point programs and multicore architectures}
+\end{thebibliography}
+ 
+ 
+ 
+ 
+ 
+\end{document}
+
+
+
+

@@ -1,0 +1,6 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Introduction}{4}
+\contentsline {chapter}{\numberline {2}Naive implementation}{5}
+\contentsline {chapter}{\numberline {3}Using a temporary variable to speed up cache lookup}{6}
+\contentsline {chapter}{\numberline {4}Loop unrolling to exploit sum and multiplication pipelines}{7}
+\contentsline {chapter}{\numberline {5}Parallel computations}{8}
