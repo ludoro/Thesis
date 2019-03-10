@@ -1,6 +1,9 @@
 \babel@toc {english}{}
 \contentsline {chapter}{\numberline {1}Introduction}{4}
-\contentsline {chapter}{\numberline {2}Naive implementation}{5}
-\contentsline {chapter}{\numberline {3}Using a temporary variable to speed up cache lookup}{6}
-\contentsline {chapter}{\numberline {4}Loop unrolling to exploit sum and multiplication pipelines}{7}
-\contentsline {chapter}{\numberline {5}Parallel computations}{8}
+\contentsline {section}{\numberline {1.1}Roofline model}{4}
+\contentsline {section}{\numberline {1.2}Eigen}{5}
+\contentsline {section}{\numberline {1.3}LIKWID}{5}
+\contentsline {chapter}{\numberline {2}Naive implementation}{8}
+\contentsline {chapter}{\numberline {3}Using a temporary variable to speed up cache lookup}{9}
+\contentsline {chapter}{\numberline {4}Loop unrolling to exploit sum and multiplication pipelines}{10}
+\contentsline {chapter}{\numberline {5}Parallel computations}{11}
