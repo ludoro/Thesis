@@ -174,6 +174,13 @@ Another picture with information on cache levels:\\
 
 Lastly, likwid let us change the maximum and minimum frequency of our CPU. To have the least amount of oscillations when running our code, we set both at 2.6GHz, which is the maximum frequency allowed by our machine.
 
+\section{Hardware specifications}
+The Interlagos processor is a 16-core Opteron by AMD's. The cores are paired into "modules" which share a significant proportion of resources. The figure below gives an overview of which resources are shared between the two cores of a module. More information can be found here: \cite{interlagos}
+
+\begin{center}
+\includegraphics[width=10cm, height=8cm]{interlagos}
+\end{center}
+
 \section{Eigen}
 Our main goal is to see how our code measures against Eigen's. 
 Eigen is a library written in C++ which provides algorithms for fast matrix algebra, such as: dense and sparse product of matrix and vectors, matrix decomposition, space transformations. \\This library is widely used by many projects and is the result of the work of experts starting at least from 2009. Given this premises, it seems very difficult to get close to their performance. However, even matching it will be a great accomplishment and would show that there is still work to be done to improve it. 
@@ -183,7 +190,7 @@ The Roofline model is a performance model used to provide estimates of a given c
 It can be visualized by plotting floating point performance as a function of arithmetic intensity. 
 Below an example of such a plot taken by \cite{roofmodel}.
 
-\includegraphics[width=10cm, height=8cm]{roof_example}
+\includegraphics[width=15cm, height=8cm]{roof_example}
 \\This model is used to determine the two main bottlenecks: bandwidth and core. It works under the assumption that data is already saved in cache and there  is no latency. It depends on empirical measurements, so it is inherently subject to error. 
 It plots the performance of the code as dependent variable of computational intensity, below I will explain how to calculate such values using the tool described at the beginning of the chapter. 
 \\
@@ -247,13 +254,13 @@ I am going to focus on the DP Mflops/s, the higher the number the faster the res
 \section{Decreasing matrix dimension} 
 By changing the matrix dimension, we get different and interesting results. 
 
-\subsection{ n = 44}
+\subsection{ n = 40}
 
 \begin{itemize}
-\item[\textbf{O0}] 213  Mflops/s
-\item[\textbf{O1}] 370 Mflops/s
-\item[\textbf{O2}] 345 Mflops/s
-\item[\textbf{O3}] 368 Mflops/s
+\item[\textbf{O0}] 195 Mflops/s
+\item[\textbf{O1}] 302 Mflops/s
+\item[\textbf{O2}] 313 Mflops/s
+\item[\textbf{O3}] 315 Mflops/s
 \end{itemize}
 
 
@@ -293,12 +300,12 @@ I will now analyze the code compiling it with different flags: O0, O1, O2 and O3
 
 \section{Decreasing matrix dimension} 
 
-\subsection{ n = 44}
+\subsection{ n = 40}
 \begin{itemize}
-\item[\textbf{O0}] 229  Mflops/s
-\item[\textbf{O1}] 276 Mflops/s
-\item[\textbf{O2}] 357 Mflops/s
-\item[\textbf{O3}] 348 Mflops/s
+\item[\textbf{O0}] 204  Mflops/s
+\item[\textbf{O1}] 255 Mflops/s
+\item[\textbf{O2}] 315 Mflops/s
+\item[\textbf{O3}] 321 Mflops/s
 \end{itemize}
 
 \subsection{ n = 400}
@@ -336,12 +343,12 @@ I will now analyze the code compiling it with different flags: O0, O1, O2 and O3
 
 \section{Decreasing matrix dimension} 
 
-\subsection{n = 44}
+\subsection{n = 40}
 \begin{itemize}
-\item[\textbf{O0}] 324  Mflops/s
-\item[\textbf{O1}] 973 Mflops/s
-\item[\textbf{O2}] 1011 Mflops/s
-\item[\textbf{O3}] 991 Mflops/s
+\item[\textbf{O0}] 313 Mflops/s
+\item[\textbf{O1}] 882 Mflops/s
+\item[\textbf{O2}] 926 Mflops/s
+\item[\textbf{O3}] 915 Mflops/s
 \end{itemize}
 
 \subsection{ n = 400}
@@ -358,33 +365,111 @@ I will now analyze the code compiling it with different flags: O0, O1, O2 and O3
 \chapter{Eigen implementation and comparison}
 
 Let's now see how the the Eigen library is doing on the same hardware. 
+Below four tables that represent the data gathered from the simulation:
+
+\begin{center}
+ \begin{tabular}{|c c c c c |} 
+ \hline
+ O0 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ \hline
+ n = 40 & 6 & 87837 & 787  & a\\ 
+ \hline
+ n = 400 & 7 & 78 & 5415 & a\\
+ \hline
+ n = 1000 & 545 & 778 & 7507 & a\\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+ \begin{tabular}{|c c c c c |} 
+ \hline
+ O1 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ \hline
+ n = 40 & 6 & 87837 & 787  & a\\ 
+ \hline
+ n = 400 & 7 & 78 & 5415 & a\\
+ \hline
+ n = 1000 & 545 & 778 & 7507 & a\\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+ \begin{tabular}{|c c c c c |} 
+ \hline
+ O2 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ \hline
+ n = 40 & 6 & 87837 & 787  & a\\ 
+ \hline
+ n = 400 & 7 & 78 & 5415 & a\\
+ \hline
+ n = 1000 & 545 & 778 & 7507 & a\\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+ \begin{tabular}{|c c c c c |} 
+ \hline
+ O3 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ \hline
+ n = 40 & 6 & 87837 & 787  & a\\ 
+ \hline
+ n = 400 & 7 & 78 & 5415 & a\\
+ \hline
+ n = 1000 & 545 & 778 & 7507 & a\\
+ \hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+ \begin{tabular}{|c c c c c |} 
+ \hline
+ O4 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ \hline
+ n = 40 & 6 & 87837 & 787  & a\\ 
+ \hline
+ n = 400 & 7 & 78 & 5415 & a\\
+ \hline
+ n = 1000 & 545 & 778 & 7507 & a\\
+ \hline
+\end{tabular}
+\end{center}
+
 
 Let's start with $n = 1000$ as before.
 
 \begin{itemize}
-\item[\textbf{O0}] 125  Mflops/s
-\item[\textbf{O1}] 2000 Mflops/s
-\item[\textbf{O2}] 2037 Mflops/s
-\item[\textbf{O3}] 2048 Mflops/s
+\item[\textbf{O0}] 94  Mflops/s
+\item[\textbf{O1}] 1922 Mflops/s
+\item[\textbf{O2}] 1958 Mflops/s
+\item[\textbf{O3}] 2024 Mflops/s
 \end{itemize}
 
-With $n = 44$:
+With $n = 40$:
 
 \begin{itemize}
-\item[\textbf{O0}] 93  Mflops/s
-\item[\textbf{O1}] 604 Mflops/s
-\item[\textbf{O2}] 591 Mflops/s
-\item[\textbf{O3}] 421 Mflops/s
+\item[\textbf{O0}] 59  Mflops/s
+\item[\textbf{O1}] 464 Mflops/s
+\item[\textbf{O2}] 455 Mflops/s
+\item[\textbf{O3}] 383 Mflops/s
 \end{itemize}
 
 With $n=400$:
 
 \begin{itemize}
-\item[\textbf{O0}] 145  Mflops/s
-\item[\textbf{O1}] 4072 Mflops/s
-\item[\textbf{O2}] 4340 Mflops/s
-\item[\textbf{O3}] 4352 Mflops/s
+\item[\textbf{O0}] 70  Mflops/s
+\item[\textbf{O1}] 2339 Mflops/s
+\item[\textbf{O2}] 2297 Mflops/s
+\item[\textbf{O3}] 3429 Mflops/s
 \end{itemize}
+
+
+
+
+
+
 
 
 Cose che notato di cui vorrei parlare:
@@ -413,14 +498,28 @@ What can be done better? Splitting the matrix in blocks
 
 %%BIBLIOGRAPHY
 \begin{thebibliography}{1}
+
 \bibitem{likwid} 
-Jan Treibig, Georg Hager, Gerhard Wellein, \textit{LIKWID: A lightweight performance-oriented tool suite for x86 multicore environments}. 
+Jan Treibig, Georg Hager, Gerhard Wellein, \textit{LIKWID: A lightweight performance-oriented tool suite for x86 multicore environments.}
+ 
 \bibitem{openmp}
-Mark bull, \textit{A Short Introduction to OpenMP}
+Mark bull, \textit{A Short Introduction to OpenMP.}
+
 \bibitem{eigen}
 Ga\"{e}l Guennebaud, Beno\^{i}t Jacob, \textit{Eigen v3}
+
 \bibitem{roofmodel}
-Samuel Williams, Andrew Waterman, David Patterson, \textit{An insightful visual performance model for floating point programs and multicore architectures}
+Samuel Williams, Andrew Waterman, David Patterson, \textit{An insightful visual performance model for floating point programs and multicore architectures.}
+
+\bibitem{roofmdelcache}
+Aleksandar Illic, Leonel Sousa, Frederico Pratas, \textit{Cache aware roofline model: Upgrading the loft.}
+
+\bibitem{loop_unrolling}
+Hewlett-Packard Development Company, \textit{Loop unroll and jam.}
+
+
+\bibitem{interlagos}
+Numerical Algorithms Group Ltd, \textit{How to make best use of the AMD Interlagos processor.}
 \end{thebibliography}
  
  
