@@ -24,15 +24,11 @@ int main(int argc, char *argv[]){
 
   //taking input
   for(int i = 0; i < n; i++){
-    if (!fscanf(input_2, "%lf", &vector(i))){
-      break;
-    }
-    for(int j = 0; j < n; j++){
-      if(!fscanf(input_1, "%lf", &matrix(i))){
-        break;
+      vector(i) = 1;
+      for(int j = 0; j < n; j++){
+        matrix(i,j) = i;
       }
     }
-  }
   //closing files
   fclose(input_1);
   fclose(input_2);
