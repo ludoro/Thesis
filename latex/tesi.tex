@@ -100,7 +100,7 @@
 
 %%ABSTRACT
 \begin{abstract}
-Comparison between different self-made implementations of the dense matrix vector product and Eigen's library implementation, using different optimizations flags on a single core.\\ After getting to the theoretical limit of performance on our machine, I addressed scalability by running the code in parallel using OpenMP. 
+Comparison between different self-made implementations of the dense matrix vector product and Eigen's library implementation, using different optimizations flags on a single core.\\ After getting to the theoretical limit of performance on our machine, I adressed scalability by running the code in parallel using OpenMP. 
 \end{abstract}
 
 \tableofcontents
@@ -109,14 +109,14 @@ Comparison between different self-made implementations of the dense matrix vecto
 %%CAPITOLO 1
 \chapter{Introduction}
 In this first chapter I will introduce the main ideas to understand three different implementations of the code, plus the tools used to analyze them. \\
-Let $A$ be a $n\times n$ dense matrix and v be a vector of $n$ entries. We define the \textbf{kernel} as the following operation: 
+Let $\mathbf{A}$ be a $n\times n$ dense matrix and $\mathbf{v}$ be a vector of $n$ entries. We define the \textbf{kernel} as the following operation: 
 $$ result[i] = result[i] + A[i,j]*vector[i]$$ 
 The kernel is indeed very simple, so there is not much mathematical machinery that can be employed to speed up the calculation. \\
-However, I will show how to write it in slightly different ways to exploit the cache and pipe dimension.  \\
+However, I will show how to write the code in three different ways to extract as much as performance as we can from the hardware.\\\\
 When using the g++ compiler, we can set different optimization flags such as: O0, O1, O2 and O3. \\
 O$0$ is the default one, and no optimization is done. From here, the higher the number the better the compiler optimizes the code.\\
-The code comparison will then be done with different optimization flags and different size of matrices. The reason for the latter is that there exists a number $n \in \mathbb{N}$ such that all our data will be saved in the Cache, thus speeding up the algorithm. 
-
+The code comparison will then be done with different optimization flags and different size of matrices. Changing the dimension of the matrix shows how much difference there is in saving values in the Cache versus memory.\\\\
+After that, I will adress scalability by running the code in parallel using OpenMP.
 
 \section{STREAM} 
 STREAM is a simple synthetic benchmark program that measures sustainable memory bandwidth in MB/s and the corresponding computation rate for  vector kernels. \\
@@ -127,7 +127,7 @@ By running a python script, I calculated that our bandwidth on average is: 6000 
 \section{LIKWID}
 LIKWID is a set of command line tools supporting software developers, benchmarkers and application users to get the best performance on a given system.
 One of the main tool is \textbf{likwid-perfctr}, that offers access to hardware performance counters and derives metrics from the raw counts. 
-By running likwid-perfctr, we can profile our code. The following screenshot is an example of an output: 
+By running likwid-perfctr, we can profile our code. The following image is an example of an output: 
 
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{scree_lik_perf}
@@ -143,11 +143,10 @@ A brief explanation of all the metrics:
 \item{\textbf{Runtime (RDTSC) [s]}: counts the number of cycles since reset. }
 \item{\textbf{Runtime unhalted [s]}: counts the number of cycles since reset when CPU was not halted.}
 \item{\textbf{DP MFLOP/s}:  number of double precision MFLOP/s.}
-\item{\textbf{ CPI}: number f cycles per instruction retired.}
+\item{\textbf{ CPI}: number of cycles per instruction retired.}
 \item{\textbf{CPI (based on uops)}: Calculation of CPI based on uops.}
 \item{\textbf{ IPC }: number of instructions per cycles}
 \end{itemize}
-
 Below some useful formulas that provide more insights into how these numbers are related to each other: 
 \begin{itemize}
 \item DP MFLOP/s = 1.0E-06*(RETIRED\_FLOPS\_DOUBLE\_ALL)/time
@@ -155,14 +154,12 @@ Below some useful formulas that provide more insights into how these numbers are
 \item CPI (based on uops) = CPU\_CLOCKS\_UNHALTED/RETIRED\_UOPS
 \item IPC = RETIRED\_INSTRUCTIONS/CPU\_CLOCKS\_UNHALTED
 \end{itemize}
-
 To understand and use the performance properties of the hardware, it is important to know the machine's topology: \textbf{likwid-topology} gives us information about: 
 \begin{itemize}
 \item \textbf{Thread topology}: how threads are concurrently executed and split in subprocesses. 
 \item \textbf{Cache topology}: how processors share the cache hierarchy.
 \item \textbf{Cache properties}: detailed information about all cache levels.
 \end{itemize}
-
 Below an example of the output with information about HW and thread topology:\\
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{topology_1}
@@ -171,7 +168,6 @@ Another picture with information on cache levels:\\
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{topology_2}
 \end{center}
-
 Lastly, likwid let us change the maximum and minimum frequency of our CPU. To have the least amount of oscillations when running our code, we set both at 2.6GHz, which is the maximum frequency allowed by our machine.
 
 \section{Hardware specifications}
@@ -187,11 +183,8 @@ Eigen is a library written in C++ which provides algorithms for fast matrix alge
 
 \section{Roof-line model}
 The Roofline model is a performance model used to provide estimates of a given computer kernel. 
-It can be visualized by plotting floating point performance as a function of arithmetic intensity. 
-Below an example of such a plot taken by \cite{roofmodel}.
-
-\includegraphics[width=15cm, height=8cm]{roof_example}
-\\This model is used to determine the two main bottlenecks: bandwidth and core. It works under the assumption that data is already saved in cache and there  is no latency. It depends on empirical measurements, so it is inherently subject to error. 
+It can be visualized by plotting floating point performance as a function of arithmetic intensity. \\\\
+This model is used to determine the two main bottlenecks: bandwidth and algorithm's perfomance. It works under the assumption that data is already saved in cache and there  is no latency. It depends on empirical measurements, so it is inherently subject to error. 
 It plots the performance of the code as dependent variable of computational intensity, below I will explain how to calculate such values using the tool described at the beginning of the chapter. 
 \\
 The peak performance can be calculated using the following formula, where $n$ is the number of cores, $F$ is the number of floating point instructions for cycle, $v$ is the clock speed and $S$ is the SIMDY feature, for now we are not concerned about this last term. 
@@ -204,19 +197,16 @@ In our case, the result is then just 2.6$\frac{Gflops}{s}$.
 However, this is just the theoretical limit: our performance P actually is: 
 
 $$ P = min(P_{max}, \text{Bandwidth * computational intensity}) $$
-
 In this formula, computational intensity is s a measure of floating-point operations (FLOPs) performed by a given code (or code section) relative to the amount of memory accesses (Bytes) that are required to support those operations. \\
-We shall see how it is indeed the deciding factor when evaluating different algorithms, because in this framework we ideally want to build an an algorithm such as that the value $\textbf{Bandwidth * computational intensity}$ reaches $P_{max}$.\\
-
+We shall see how it is indeed the deciding factor when evaluating different algorithms, because in this framework we ideally want to build an an algorithm such as that the value $\textbf{Bandwidth * computational intensity}$ reaches $P_{max}$.\\\\
 With this idea in mind, I developed three different implementations of the dense matrix vector product:
 
 \begin{itemize}
-\item \textbf{Naive implementation}: the classic implementation without much thought, still useful to benchmark against to check progress. 
-\item \textbf{Temporary variable}: using a temporary variable to always keep in cache a value to lessen the number of fetches from memory. 
-\item \textbf{Loop unrolling}: splitting up the loop manually to exploit pipe levels, that means keeping the pipe occupied avoiding  downtime. 
+\item \textbf{Naive implementation}: the classic implementation, still useful to benchmark against to check progress. 
+\item \textbf{Temporary variable}: using a temporary variable saved in cache to  lessen the number of fetches from memory. 
+\item \textbf{Loop unrolling}: splitting up the loop manually to exploit pipe levels, that means keeping the pipe occupied avoiding  downtime. Moreover, we manage to get more temporary variables in cache.
 \end{itemize}
-
-With the last implementation, we managed to get to the theoretical limit. After that, we adressed scalability. That is, we looked at how our kernel worked in parallel using OpenMP.
+After the last implementation, we adressed scalability. That is, we looked at how our kernel worked in parallel using OpenMP.
 
 
 
@@ -227,53 +217,16 @@ With the last implementation, we managed to get to the theoretical limit. After 
 The naive implementation is just that, the simplest code one can develop to solve this problem, below the .C file:
 \lstinputlisting[style=CStyle]{naive_without_tmp.c}
 The computational intensity in this case is $\frac{2}{32}\frac{Flops}{Bytes}$. 
-\\Before blindly applying the formulas seen in chapter one, there are some key insights to understand. until we get to the final implementation, we are not exploiting pipelines of sum and product. In short, this means that we are not allowing the processor to execute these basic operations in parallel. It follows that $P_{max}$ is limited by a factor of $8$, because the size of the pipe for sum and of product are 4 each.
-We then have that $P_{max}= \frac{2.6}{8} \frac{Gflops}{s} $, and this is a major bottleneck of our program, because $\textbf{Bandwitdht} * \textbf{computational intensity} = 6*\frac{1}{16} = 0.375 \frac{Gflops}{s} $. We will tackle the bottleneck in chapter 4.
-
+\\Before blindly applying the formulas seen in chapter one, there are some key insights to understand. Until we get to the final implementation, we are not exploiting pipelines of sum and product. In short, this means that we are not allowing the processor to execute these basic operations in parallel. It follows that $P_{max}$ is limited by a factor of $8$, because the size of the pipe for sum and of product are 4 each.
+We then have that $P_{max}= \frac{2.6}{8} \frac{Gflops}{s} $, and this is a major bottleneck of our program, because $\textbf{Bandwitdht} * \textbf{computational intensity} = 6*\frac{1}{16} = 0.375 \frac{Gflops}{s} $. We will tackle the bottleneck in chapter 4.\\
 Using likwid-topology, we find the following sizes for the cache: 
 \begin{itemize}
 \item L1: 16 kB
 \item L2: 2 MB
 \item L3: 6 MB
 \end{itemize}
-We are going to focus our attention on the L1 and L2 cache levels, which are the fastest. In short: if the elements we are working with are saved there, we can access them faster than usual.  For dense matrices, L2 is actually faster than L1. I am going to repeat the same analysis with two different matrices $A_1$ and $A_2$ of size respectively $n_1 = 40$ and  $n_2 = 400$.  The first matrix can be saved in L1, the second one in L2 and the one with $n=1000$ is saved in memory.  
-
- 
-\section{Different optimization flags comparison}
-I will now analyze the code compiling it with different flags: O0, O1, O2 and O3 and $n = 1000$.
-
-I am going to focus on the DP Mflops/s, the higher the number the faster the result. 
-\begin{itemize}
-\item[\textbf{O0}] 328  Mflops/s
-\item[\textbf{O1}] 740 Mflops/s
-\item[\textbf{O2}] 720 Mflops/s
-\item[\textbf{O3}] 761 Mflops/s
-\end{itemize}
-
-
-\section{Decreasing matrix dimension} 
-By changing the matrix dimension, we get different and interesting results. 
-
-\subsection{ n = 40}
-
-\begin{itemize}
-\item[\textbf{O0}] 195 Mflops/s
-\item[\textbf{O1}] 302 Mflops/s
-\item[\textbf{O2}] 313 Mflops/s
-\item[\textbf{O3}] 315 Mflops/s
-\end{itemize}
-
-
-\subsection{ n = 400}
-
-\begin{itemize}
-\item[\textbf{O0}] 328  Mflops/s
-\item[\textbf{O1}] 948 Mflops/s
-\item[\textbf{O2}] 941 Mflops/s
-\item[\textbf{O3}] 936 Mflops/s
-\end{itemize}
-
-
+We are going to focus our attention on the L1 and L2 cache levels, which are the fastest. In short: if the elements we are working with are saved there, we can access them faster than usual.  For dense matrices, L2 is actually faster than L1. I am going to repeat the same analysis with three different matrices of size respectively $n_1 = 40$, $n_2 = 400$, $n_3 = 1000$.\\
+The first matrix can be saved in L1, the second one in L2 and the third one is saved in memory.  
 
 
 %%CAPITOLO 3
@@ -281,42 +234,11 @@ By changing the matrix dimension, we get different and interesting results.
 
 We can improve the code described in chapter two, introducing a temporary variable in the following way: 
 \lstinputlisting[style=CStyle]{naive_with_tmp.c}
-
 At first glance, It may seem we are just wasting precious cache space with another double variable but it turns out this change doubles the computational intensity with respect to the first algorithm. \\
-The key take away is that our kernel does not change even with the addition of the $\textit{tmp}$ variable: this time we can skip the fetching and loading of this variable, because when entering the second for loop it is already in the cache. This means that the computational intensity becomes $\frac{1}{8}\frac{Flops}{Bytes}$. 
+The key take away is that our kernel does not change even with the addition of the $\textit{tmp}$ variable: this time we can skip the fetching and loading of this variable, because when entering the second for loop it is already in the cache. This means that the computational intensity becomes $\frac{2}{16}\frac{Flops}{Bytes}$. 
 However, we still have not solved the pipeline's problem described in the previous chapter. \\
 This means that even though we doubled the computational intensity our bottleneck is still $P_{max}$ due to the coefficient $\frac{1}{8}$.  
-Nevertheless, by compiling the code we still manage to improve, as seen in the next section. 
-
-\section{Different optimization flags comparison}
-I will now analyze the code compiling it with different flags: O0, O1, O2 and O3 and $n = 1000$.
-
-\begin{itemize}
-\item[\textbf{O0}] 328  Mflops/s
-\item[\textbf{O1}] 344 Mflops/s
-\item[\textbf{O2}] 704 Mflops/s
-\item[\textbf{O3}] 766 Mflops/s
-\end{itemize}
-
-\section{Decreasing matrix dimension} 
-
-\subsection{ n = 40}
-\begin{itemize}
-\item[\textbf{O0}] 204  Mflops/s
-\item[\textbf{O1}] 255 Mflops/s
-\item[\textbf{O2}] 315 Mflops/s
-\item[\textbf{O3}] 321 Mflops/s
-\end{itemize}
-
-\subsection{ n = 400}
-
-\begin{itemize}
-\item[\textbf{O0}] 332  Mflops/s
-\item[\textbf{O1}] 345 Mflops/s
-\item[\textbf{O2}] 937 Mflops/s
-\item[\textbf{O3}] 961 Mflops/s
-\end{itemize}
-
+Nevertheless, by compiling the code we still manage to improve, as seen in chapter 5.
 
 
 %CAPITOLO 4 
@@ -324,59 +246,42 @@ I will now analyze the code compiling it with different flags: O0, O1, O2 and O3
 With this code, I finally manage to exploit the sum and product pipelines, thus reaching $P_{max}$ = 2.6 GHz, then the bottleneck must be in the other term, which depends on the computational intensity of the algorithm. 
 The code can be found below: 
 \lstinputlisting[style=CStyle]{loop_unrolling.c}
-
-The pipeline for the sum and multiplication is constantly filled with the trick of splitting the loop 4 by 4. It can be seen as a generalization of the code with the temporary variable. \\
-This time, the computational intensity is $\frac{32}{160}\frac{Flops}{Bytes}$. This requires more explanation: in the numerator we have 32 operations, calculated just by looking at the code. In the denominator we get 160 by seeing that we fetch and load $(16+4)$ double elements, thus getting 160 bytes. 
+The pipeline for the sum and multiplication is constantly filled with the trick of splitting the loop 4 by 4. It can be seen as a generalization of the code with the temporary variable. \\\\
+This time, the computational intensity is $\frac{32}{160}\frac{Flops}{Bytes}$. In the numerator we have 32 operations. In the denominator we get 160 by seeing that we fetch and load $(16+4)$ double elements, thus getting 160 bytes. 
 Then the operational intensity is $\frac{1}{5}\frac{Flops}{Bytes}$, multiplied by the Bandwidth we get 1.2 $\frac{Gflops}{s}$. 
-
-
-
-\section{Different optimization flags comparison}
-I will now analyze the code compiling it with different flags: O0, O1, O2 and O3 and $n = 1000$.
-
-\begin{itemize}
-\item[\textbf{O0}] 446  Mflops/s
-\item[\textbf{O1}] 1544 Mflops/s
-\item[\textbf{O2}] 1523 Mflops/s
-\item[\textbf{O3}] 1538 Mflops/s
-\end{itemize}
-
-\section{Decreasing matrix dimension} 
-
-\subsection{n = 40}
-\begin{itemize}
-\item[\textbf{O0}] 313 Mflops/s
-\item[\textbf{O1}] 882 Mflops/s
-\item[\textbf{O2}] 926 Mflops/s
-\item[\textbf{O3}] 915 Mflops/s
-\end{itemize}
-
-\subsection{ n = 400}
-
-\begin{itemize}
-\item[\textbf{O0}] 453  Mflops/s
-\item[\textbf{O1}] 2346 Mflops/s
-\item[\textbf{O2}] 3046 Mflops/s
-\item[\textbf{O3}] 2935 Mflops/s
-\end{itemize}
 
 
 %CAPITOLO 5 
 \chapter{Eigen implementation and comparison}
 
 Let's now see how the the Eigen library is doing on the same hardware. 
-Below four tables that represent the data gathered from the simulation:
+Below four tables that represent the data gathered from the simulation, every number is expressed in MFlops/s.
 
 \begin{center}
  \begin{tabular}{|c c c c c |} 
  \hline
- O0 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ O0 & naive   & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
  \hline
- n = 40 & 6 & 87837 & 787  & a\\ 
+ n = 40 & 195   & 204       & 313          & 59    \\ 
  \hline
- n = 400 & 7 & 78 & 5415 & a\\
+ n = 400 & 328   & 332       & 453                 & 70       \\
  \hline
- n = 1000 & 545 & 778 & 7507 & a\\
+ n = 1000 & 327  & 328    &  445            & 94   \\
+ \hline
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+ \begin{tabular}{|c c c c c |} 
+ \hline
+ O1 & naive & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ \hline
+ n = 40 & 302 &  255 & 882  & 464\\ 
+ \hline
+ n = 400 & 948 & 345 & 2346 & 2339\\
+ \hline
+ n = 1000 & 740 & 344 & 1544 & 1922\\
  \hline
 \end{tabular}
 \end{center}
@@ -384,27 +289,13 @@ Below four tables that represent the data gathered from the simulation:
 \begin{center}
  \begin{tabular}{|c c c c c |} 
  \hline
- O1 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ O2 & naive & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
  \hline
- n = 40 & 6 & 87837 & 787  & a\\ 
+ n = 40 & 313 & 315 & 926  & 455\\ 
  \hline
- n = 400 & 7 & 78 & 5415 & a\\
+ n = 400 & 941 & 937 & 3046 & 2297\\
  \hline
- n = 1000 & 545 & 778 & 7507 & a\\
- \hline
-\end{tabular}
-\end{center}
-
-\begin{center}
- \begin{tabular}{|c c c c c |} 
- \hline
- O2 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
- \hline
- n = 40 & 6 & 87837 & 787  & a\\ 
- \hline
- n = 400 & 7 & 78 & 5415 & a\\
- \hline
- n = 1000 & 545 & 778 & 7507 & a\\
+ n = 1000 & 720 & 704 & 1523 & 1958\\
  \hline
 \end{tabular}
 \end{center}
@@ -412,72 +303,39 @@ Below four tables that represent the data gathered from the simulation:
 \begin{center}
  \begin{tabular}{|c c c c c |} 
  \hline
- O3 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
+ O3 & naive & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
  \hline
- n = 40 & 6 & 87837 & 787  & a\\ 
+ n = 40 & 315 & 321 & 915  & 383\\ 
  \hline
- n = 400 & 7 & 78 & 5415 & a\\
+ n = 400 & 936 & 961 & 2935 & 3429\\
  \hline
- n = 1000 & 545 & 778 & 7507 & a\\
+ n = 1000 & 761 & 766 & 1538 & 2024\\
  \hline
 \end{tabular}
 \end{center}
+Let's see what are the main takeaways from the data.\\
+For $n = 40$, we see that Eigen struggles against our best implementation for every flag by a pretty significant margin. \\
+The code performs better with $n = 400$ than with $n = 40$, which seems strange at first because L1 cache should be faster than L2. However it seems to be a known issue that for dense matrix product the gcc compiler does not to exploit all the performance. \\\\
+Unsurprisingly, the code runs faster with $n = 400$ than with $n = 1000$. One reason is the fact that the elements of the latter are saved in memory. 
+We see that Eigen performs the best when the compiler setting are turned to the maximum. Otherwise, loop unrolling performs very well.\\\\ 
+It is very interesting to see how much performance we gained from the first implementation to the third one. It is summarized in the graph below where the data is taken from the -O2 compilation.
 
 \begin{center}
- \begin{tabular}{|c c c c c |} 
- \hline
- O4 & naive & without\_tmp & loop unrolling & eigen \\ [0.5ex] 
- \hline
- n = 40 & 6 & 87837 & 787  & a\\ 
- \hline
- n = 400 & 7 & 78 & 5415 & a\\
- \hline
- n = 1000 & 545 & 778 & 7507 & a\\
- \hline
-\end{tabular}
+\includegraphics[width=10cm, height=8cm]{plotcolor}
 \end{center}
+To really understand what is going on at the lowest level, we can take a look at the assembly code for eigen loop unrolling. 
 
 
-Let's start with $n = 1000$ as before.
+Lastly, a brief analysis on the model used.\\
+Our roofline graph is the following: 
+\begin{center}
+\includegraphics[width=10cm, height=8cm]{fig_ok}
+\end{center}
+Based on the model we chose, our performance should not have surpassed 1200$\frac{MFlops}{s}$. However our code reaches on average a maximum performance of 2935 $\frac{MFlops}{s}$ and Eigen a staggering 3429 $\frac{MFlops}{s}$. 
+However, the roof line model struggles to represent the gains made by exploiting cache levels. If we used the roofline cache aware model, seen in \cite{roofmdelcache} the model would have been closer to reality. 
+Moreover, even by setting the frequency of the CPU to a constant value, it still fluctuates a bit because of the Turbo Boost feature of our hardware. 
+Basically, the operating system may decide to up the frequency of the CPU for a short time if it is deemed useful for the task at hand.
 
-\begin{itemize}
-\item[\textbf{O0}] 94  Mflops/s
-\item[\textbf{O1}] 1922 Mflops/s
-\item[\textbf{O2}] 1958 Mflops/s
-\item[\textbf{O3}] 2024 Mflops/s
-\end{itemize}
-
-With $n = 40$:
-
-\begin{itemize}
-\item[\textbf{O0}] 59  Mflops/s
-\item[\textbf{O1}] 464 Mflops/s
-\item[\textbf{O2}] 455 Mflops/s
-\item[\textbf{O3}] 383 Mflops/s
-\end{itemize}
-
-With $n=400$:
-
-\begin{itemize}
-\item[\textbf{O0}] 70  Mflops/s
-\item[\textbf{O1}] 2339 Mflops/s
-\item[\textbf{O2}] 2297 Mflops/s
-\item[\textbf{O3}] 3429 Mflops/s
-\end{itemize}
-
-
-
-
-
-
-
-
-Cose che notato di cui vorrei parlare:
-
-Se la matrice sta tutta in L1 va peggio che tutta in L2, perch\'e? infatti n=44 fa schifo sia il nostro che eigen ma eigen pi\'u schifo 
-n = 400 cio\'e che sta in L2 va meglio che n = 1000, che sta comunque tutta in L2, perch\'e?
-Poca differenza tra O2 e O3, perch\'e?
-Spiegare perch\'e superiamo P del modello introducendo brevemente roofline cache model 
 
 %CAPITOLO 6
 \chapter{Parallel computations using OpenMP}
