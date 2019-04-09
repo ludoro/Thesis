@@ -69,7 +69,7 @@
     \noindent
     \parbox[t]{.5\textwidth}{\raggedright
     \large{Supervisors:}\\
-    \large{Prof. Stefano Berrone\\ Dr. Federico Tesser}}
+    \large{Prof. Stefano Berrone}}
     \hfill
     \parbox[t]{.3\textwidth}{\raggedleft
     \large Candidate:\\
@@ -87,7 +87,7 @@
 \begin{document} 
 \title{POLITECNICO DI TORINO}
 \author{}
-\date{July 2019}
+\date{May 2019}
 \maketitle
 
 %%DEDICA
@@ -100,7 +100,7 @@
 
 %%ABSTRACT
 \begin{abstract}
-Comparison between different self-made implementations of the dense matrix vector product and Eigen's library implementation, using different optimizations flags on a single core.\\ After getting to the theoretical limit of performance on our machine, I adressed scalability by running the code in parallel using OpenMP. 
+Comparison between different self-made implementations of the dense matrix vector product and Eigen's library implementation, using different optimizations flags on a single core.\\ After getting to the theoretical limit of performance on our machine, I addressed scalability by running the code in parallel using OpenMP. 
 \end{abstract}
 
 \tableofcontents
@@ -116,7 +116,7 @@ However, I will show how to write the code in three different ways to extract as
 When using the g++ compiler, we can set different optimization flags such as: O0, O1, O2 and O3. \\
 O$0$ is the default one, and no optimization is done. From here, the higher the number the better the compiler optimizes the code.\\
 The code comparison will then be done with different optimization flags and different size of matrices. Changing the dimension of the matrix shows how much difference there is in saving values in the Cache versus memory.\\\\
-After that, I will adress scalability by running the code in parallel using OpenMP.
+After that, I will address scalability by running the code in parallel using OpenMP.
 
 \section{STREAM} 
 STREAM is a simple synthetic benchmark program that measures sustainable memory bandwidth in MB/s and the corresponding computation rate for  vector kernels. \\
@@ -171,7 +171,7 @@ Another picture with information on cache levels:\\
 Lastly, likwid let us change the maximum and minimum frequency of our CPU. To have the least amount of oscillations when running our code, we set both at 2.6GHz, which is the maximum frequency allowed by our machine.
 
 \section{Hardware specifications}
-The Interlagos processor is a 16-core Opteron by AMD's. The cores are paired into "modules" which share a significant proportion of resources. The figure below gives an overview of which resources are shared between the two cores of a module. More information can be found here: \cite{interlagos}
+The Interlagos 12-core (for each socket) Opteron processor by AMD's. We  The cores are paired into "modules" which share a significant proportion of resources. The figure below gives an overview of which resources are shared between the two cores of a module. More information can be found here: \cite{interlagos}
 
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{interlagos}
@@ -250,6 +250,12 @@ The pipeline for the sum and multiplication is constantly filled with the trick 
 This time, the computational intensity is $\frac{32}{160}\frac{Flops}{Bytes}$. In the numerator we have 32 operations. In the denominator we get 160 by seeing that we fetch and load $(16+4)$ double elements, thus getting 160 bytes. 
 Then the operational intensity is $\frac{1}{5}\frac{Flops}{Bytes}$, multiplied by the Bandwidth we get 1.2 $\frac{Gflops}{s}$. 
 
+\section{Analysis of Assembly code} 
+It is also useful to take a look at how the compiler arranges instructions at a lower level. Below, a side by side comparison of a snippet of C code and Assembly code: 
+\begin{center}
+\includegraphics[width=14cm, height=7cm]{assembly_screen}
+\end{center}
+The easiest piece to recognize is the call to the function \textit{likwid marker stop}. In our source code, after that call we assign 4 double values to specific entries of the result vector. We can see in the Assembly code that we have 4 \textbf{movsd} calls, which moves a scalar double-precision floating-point value to another location.\\ A few lines after that, we can see the word \textbf{cmp} which stands for compare, this is checking the condition on the for loop, if it satisfied it jumps at the beginning again with the call \textbf{jne}.
 
 %CAPITOLO 5 
 \chapter{Eigen implementation and comparison}
@@ -314,8 +320,8 @@ Below four tables that represent the data gathered from the simulation, every nu
 \end{tabular}
 \end{center}
 Let's see what are the main takeaways from the data.\\
-For $n = 40$, we see that Eigen struggles against our best implementation for every flag by a pretty significant margin. \\
-The code performs better with $n = 400$ than with $n = 40$, which seems strange at first because L1 cache should be faster than L2. However it seems to be a known issue that for dense matrix product the gcc compiler does not to exploit all the performance. \\\\
+For $n = 40$, Eigen struggles against our best implementation for every flag by a pretty significant margin. \\
+The code performs better with $n = 400$ than with $n = 40$, which seems strange at first because L1 cache should be faster than L2. However it seems to be a known issue that for dense matrix product the gcc compiler does not to exploit all the performance. I am going to analyze this issue in greater detail in the next section.\\\\
 Unsurprisingly, the code runs faster with $n = 400$ than with $n = 1000$. One reason is the fact that the elements of the latter are saved in memory. 
 We see that Eigen performs the best when the compiler setting are turned to the maximum. Otherwise, loop unrolling performs very well.\\\\ 
 It is very interesting to see how much performance we gained from the first implementation to the third one. It is summarized in the graph below where the data is taken from the -O2 compilation.
@@ -323,37 +329,37 @@ It is very interesting to see how much performance we gained from the first impl
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{plotcolor}
 \end{center}
-To really understand what is going on at the lowest level, we can take a look at the assembly code for eigen loop unrolling. 
-
-
-Lastly, a brief analysis on the model used.\\
+To really understand what is going on at the lowest level, we can take a look at the assembly code for eigen loop unrolling.\\\\
+A brief analysis on the model used:\\
 Our roofline graph is the following: 
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{fig_ok}
 \end{center}
 Based on the model we chose, our performance should not have surpassed 1200$\frac{MFlops}{s}$. However our code reaches on average a maximum performance of 2935 $\frac{MFlops}{s}$ and Eigen a staggering 3429 $\frac{MFlops}{s}$. 
 However, the roof line model struggles to represent the gains made by exploiting cache levels. If we used the roofline cache aware model, seen in \cite{roofmdelcache} the model would have been closer to reality. 
-Moreover, even by setting the frequency of the CPU to a constant value, it still fluctuates a bit because of the Turbo Boost feature of our hardware. 
+Moreover, even by setting the frequency of the CPU to a constant value, it still fluctuates a bit because of the \textit{Turbo Boost} feature of our hardware. 
 Basically, the operating system may decide to up the frequency of the CPU for a short time if it is deemed useful for the task at hand.
+
+\subsection{In-depth analysis of $n = 40$ performance}
+
+With $ n = 40$, we have the big advantage of saving everything in the L1 cache. However, it is hard to use our metrics to appreciate the gain because we have very little execution time, in the order of $10^{-5}$. Moreover, LIKWID performs heavy approximation in its calculations. \\
+With $n= 400$, we get a run time of the order of $10^{-4}$. The idea is to artificially increase the flops in the $n=40$ case to achieve the same order of magnitude and be able to compare the two. We achieve the result by adding another for loop that does nothing, and enlarge the section of code that LIKWID analyzes. 
+By doing this, we get a better result for $n = 40$, even though $n = 400$ is still performing better. 
 
 
 %CAPITOLO 6
 \chapter{Parallel computations using OpenMP}
 
+\textbf{Open Multi-Processing} is an application programming interface that supports multi-platform shared memory multiprocessing. It is used for parallelism within a multi-core node.\\ It is based on threads, which are processes that can share memory. \\They communicate with each other via reading and writing shared data. 
+Each thread proceeds through program instructions independently of other threads, that means it is important to ensure that actions on shared variables occur in the correct order.\\\\
+In many applications, loops are the main source of parallelism. If the iterations can be done in any order, it is possible to share the iterations between threads, for instance: thread \#1 does the even iterations and thread \#2 does the odd. After the loop is done, we can merge together the result of the two loops. In theory, we managed to do the same task in half the time.\\\\
+I will run the naive code with $n = 50000$, $O3$ flag, with number of threads 1,2,4,6 to appreciate the difference in run time. Moreover, I will also analyze how LIKWID counts the run time using a double variable inside the code.\\\\ 
 
+TO DO TWO GRAPHS for times 
 
-
-
-%CAPITOLO 7 SIMDY??
-\chapter{SIMDY FORSE} 
-
-
-%CAPITOLO 8 
-\chapter{Conclusions and future directions} 
-
-blablabla
-What can be done better? Splitting the matrix in blocks 
-
+%CAPITOLO 7 CONCLUSIONI AND FUTURE DIRECTIONS?
+\chapter{Future directions}
+SIMDY 
 %%BIBLIOGRAPHY
 \begin{thebibliography}{1}
 
@@ -375,14 +381,9 @@ Aleksandar Illic, Leonel Sousa, Frederico Pratas, \textit{Cache aware roofline m
 \bibitem{loop_unrolling}
 Hewlett-Packard Development Company, \textit{Loop unroll and jam.}
 
-
 \bibitem{interlagos}
 Numerical Algorithms Group Ltd, \textit{How to make best use of the AMD Interlagos processor.}
 \end{thebibliography}
- 
- 
- 
- 
  
 \end{document}
 
