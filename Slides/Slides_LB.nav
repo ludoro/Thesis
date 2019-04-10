@@ -22,13 +22,17 @@
 \headcommand {\sectionentry {4}{OpenMP}{6}{OpenMP}{0}}
 \headcommand {\slideentry {4}{0}{1}{6/6}{}{0}}
 \headcommand {\beamer@framepages {6}{6}}
-\headcommand {\beamer@sectionpages {6}{6}}
-\headcommand {\beamer@subsectionpages {6}{6}}
-\headcommand {\sectionentry {5}{Conclusions}{7}{Conclusions}{0}}
-\headcommand {\slideentry {5}{0}{1}{7/7}{}{0}}
+\headcommand {\slideentry {4}{0}{2}{7/7}{}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\beamer@partpages {1}{7}}
-\headcommand {\beamer@subsectionpages {7}{7}}
-\headcommand {\beamer@sectionpages {7}{7}}
-\headcommand {\beamer@documentpages {7}}
-\headcommand {\gdef \inserttotalframenumber {7}}
+\headcommand {\beamer@sectionpages {6}{7}}
+\headcommand {\beamer@subsectionpages {6}{7}}
+\headcommand {\sectionentry {5}{Conclusions}{8}{Conclusions}{0}}
+\headcommand {\slideentry {5}{0}{1}{8/9}{}{0}}
+\headcommand {\beamer@framepages {8}{9}}
+\headcommand {\slideentry {5}{0}{2}{10/12}{}{0}}
+\headcommand {\beamer@framepages {10}{12}}
+\headcommand {\beamer@partpages {1}{12}}
+\headcommand {\beamer@subsectionpages {8}{12}}
+\headcommand {\beamer@sectionpages {8}{12}}
+\headcommand {\beamer@documentpages {12}}
+\headcommand {\gdef \inserttotalframenumber {9}}

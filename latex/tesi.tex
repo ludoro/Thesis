@@ -174,7 +174,7 @@ Lastly, likwid let us change the maximum and minimum frequency of our CPU. To ha
 The Interlagos 12-core (for each socket) Opteron processor by AMD's. We  The cores are paired into "modules" which share a significant proportion of resources. The figure below gives an overview of which resources are shared between the two cores of a module. More information can be found here: \cite{interlagos}
 
 \begin{center}
-\includegraphics[width=10cm, height=8cm]{interlagos}
+\includegraphics[width=12cm, height=8cm]{interlagos}
 \end{center}
 
 \section{Eigen}
@@ -355,11 +355,17 @@ Each thread proceeds through program instructions independently of other threads
 In many applications, loops are the main source of parallelism. If the iterations can be done in any order, it is possible to share the iterations between threads, for instance: thread \#1 does the even iterations and thread \#2 does the odd. After the loop is done, we can merge together the result of the two loops. In theory, we managed to do the same task in half the time.\\\\
 I will run the naive code with $n = 50000$, $O3$ flag, with number of threads 1,2,4,6 to appreciate the difference in run time. Moreover, I will also analyze how LIKWID counts the run time using a double variable inside the code.\\\\ 
 
-TO DO TWO GRAPHS for times 
 
-%CAPITOLO 7 CONCLUSIONI AND FUTURE DIRECTIONS?
+
+
 \chapter{Future directions}
-SIMDY 
+There are still a few topics left to analyze in more detail. \\
+First of all, we should investigate how changing the roof line model to the cache aware roof line model alters the expected result. \\\\
+Then, we could also employ SIMD vectorization. The idea is to exploit data level parallelism: performing the same operation on multiple data point simultaneously. The GCC compiler already tries to vectorize wherever it is possible, however the code should be rewritten with this idea in mind. \\\\
+Lastly, it would be very interesting to further analyze how GCC behaves with matrix contained in the L1 cache.
+Closed source compilers like Intel's are expected to perform better in this situation. \\\\
+Still, we managed to show that the most sophisticated implementation of the kernel significantly outperfmorms Eigen's with $n = 40$, independently of the chosen flag. The same can be said when $n = 400$ and $O2$ flag is chosen.
+
 %%BIBLIOGRAPHY
 \begin{thebibliography}{1}
 

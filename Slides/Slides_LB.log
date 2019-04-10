@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.10.22)  9 APR 2019 20:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.10.22)  9 APR 2019 22:35
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -671,8 +671,7 @@ Package: inputenc 2018/04/06 v1.3b Input encoding file
 (/usr/local/texlive/2018/texmf-dist/tex/latex/beamer/beamerinnerthemerectangles
 .sty))
 (/usr/local/texlive/2018/texmf-dist/tex/latex/beamer/beamercolorthemewolverine.
-sty)
-No file Slides_LB.aux.
+sty) (./Slides_LB.aux)
 \openout1 = `Slides_LB.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
@@ -689,6 +688,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
 LaTeX Font Info:    ... okay on input line 22.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 22.
 LaTeX Font Info:    ... okay on input line 22.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -768,6 +768,8 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 22.
 LaTeX Info: Redefining \pageref on input line 22.
 LaTeX Info: Redefining \nameref on input line 22.
+
+(./Slides_LB.out) (./Slides_LB.out)
 \@outlinefile=\write5
 \openout5 = `Slides_LB.out'.
 
@@ -847,13 +849,10 @@ Dictionary: translator-numbers-dictionary, Language: English
 (/usr/local/texlive/2018/texmf-dist/tex/latex/translator/translator-theorem-dic
 tionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
-)
-No file Slides_LB.nav.
-[1
+) (./Slides_LB.nav) [1{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updma
+p/pdftex.map}
 
-{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-No file Slides_LB.toc.
-[2
+] (./Slides_LB.toc) [2
 
 ] [3
 
@@ -863,7 +862,34 @@ No file Slides_LB.toc.
 
 ] [6
 
-] [7
+]
+[7
+
+]
+LaTeX Font Info:    Try loading font information for U+msa on input line 83.
+ (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 83.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Try loading font information for OT1+mathkerncmss on input 
+line 83.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
+File: ot1mathkerncmss.fd 2013/03/27 Fontinst v1.933 font definitions for OT1/ma
+thkerncmss.
+) [8
+
+] [9
+
+] [10
+
+] [11
+
+] [12
 
 ]
 \tf@nav=\write6
@@ -875,36 +901,30 @@ No file Slides_LB.toc.
 \tf@snm=\write8
 \openout8 = `Slides_LB.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 79.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 79.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 95.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 95.
  (./Slides_LB.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 79.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 79.
-
-
-Package rerunfilecheck Warning: File `Slides_LB.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `Slides_LB.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  3C27C5B0B8CD5C33F4B7ABE09DFFAD5B;265.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 95.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 95.
+Package rerunfilecheck Info: File `Slides_LB.out' has not changed.
+(rerunfilecheck)             Checksum: 3C27C5B0B8CD5C33F4B7ABE09DFFAD5B;265.
  ) 
 Here is how much of TeX's memory you used:
- 16885 strings out of 492649
- 324646 string characters out of 6129621
- 403533 words of memory out of 5000000
- 20388 multiletter control sequences out of 15000+600000
- 5452 words of font info for 20 fonts, out of 8000000 for 9000
+ 17086 strings out of 492649
+ 328849 string characters out of 6129621
+ 406645 words of memory out of 5000000
+ 20548 multiletter control sequences out of 15000+600000
+ 10695 words of font info for 39 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 56i,15n,55p,776b,569s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 56i,19n,65p,776b,785s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb
 ></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb>
-</usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb>
-Output written on Slides_LB.pdf (7 pages, 44616 bytes).
+</usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></
+usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb>
+Output written on Slides_LB.pdf (12 pages, 72210 bytes).
 PDF statistics:
- 226 PDF objects out of 1000 (max. 8388607)
- 204 compressed objects within 3 object streams
- 20 named destinations out of 1000 (max. 500000)
- 43 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 527 PDF objects out of 1000 (max. 8388607)
+ 486 compressed objects within 5 object streams
+ 30 named destinations out of 1000 (max. 500000)
+ 83 words of extra memory for PDF output out of 10000 (max. 10000000)
 
