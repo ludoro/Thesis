@@ -100,7 +100,7 @@
 
 %%ABSTRACT
 \begin{abstract}
-Comparison between different self-made implementations of the dense matrix vector product and Eigen's library implementation, using different optimizations flags on a single core.\\ After getting to the theoretical limit of performance on our machine, I addressed scalability by running the code in parallel using OpenMP. 
+Comparison between different self-made implementations of the dense matrix vector product and Eigen's library implementation, using different optimizations flags on a single core.\\I also addressed scalability by running the code in parallel using OpenMP. 
 \end{abstract}
 
 \tableofcontents
@@ -189,16 +189,13 @@ It plots the performance of the code as dependent variable of computational inte
 \\
 The peak performance can be calculated using the following formula, where $n$ is the number of cores, $F$ is the number of floating point instructions for cycle, $v$ is the clock speed and $S$ is the SIMDY feature, for now we are not concerned about this last term. 
 $$ P_{peak} = n * F * S * v $$ 
-
 We can also define the maximum performance reached by our machine with the following formula, where $f_{max}$ is the maximum frequency of the CPU of our machine, $\frac{n_{operations}}{n_{cycles}}$ is the number of operations per cycle. 
 $$P_{max} = f_{max} * \frac{n_{operations}}{n_{cycles}}$$ 
-
 In our case, the result is then just 2.6$\frac{Gflops}{s}$.
 However, this is just the theoretical limit: our performance P actually is: 
-
-$$ P = min(P_{max}, \text{Bandwidth * computational intensity}) $$
+$$ P = min(P_{max}, \text{Bandwidth} * \text{computational intensity}) $$
 In this formula, computational intensity is s a measure of floating-point operations (FLOPs) performed by a given code (or code section) relative to the amount of memory accesses (Bytes) that are required to support those operations. \\
-We shall see how it is indeed the deciding factor when evaluating different algorithms, because in this framework we ideally want to build an an algorithm such as that the value $\textbf{Bandwidth * computational intensity}$ reaches $P_{max}$.\\\\
+We shall see how it is indeed the deciding factor when evaluating different algorithms, because in this framework we ideally want to build an an algorithm such that the value $\textbf{Bandwidth} * \textbf{computational intensity}$ reaches $P_{max}$.\\\\
 With this idea in mind, I developed three different implementations of the dense matrix vector product:
 
 \begin{itemize}
@@ -329,9 +326,9 @@ It is very interesting to see how much performance we gained from the first impl
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{plotcolor}
 \end{center}
-To really understand what is going on at the lowest level, we can take a look at the assembly code for eigen loop unrolling.\\\\
-A brief analysis on the model used:\\
-Our roofline graph is the following: 
+\newpage
+\section{Roofline graph}
+The next graph shows the roof line model:
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{fig_ok}
 \end{center}
@@ -339,12 +336,19 @@ Based on the model we chose, our performance should not have surpassed 1200$\fra
 However, the roof line model struggles to represent the gains made by exploiting cache levels. If we used the roofline cache aware model, seen in \cite{roofmdelcache} the model would have been closer to reality. 
 Moreover, even by setting the frequency of the CPU to a constant value, it still fluctuates a bit because of the \textit{Turbo Boost} feature of our hardware. 
 Basically, the operating system may decide to up the frequency of the CPU for a short time if it is deemed useful for the task at hand.
-
-\subsection{In-depth analysis of $n = 40$ performance}
+\newpage
+\section{In-depth analysis of $n = 40$ performance}
 
 With $ n = 40$, we have the big advantage of saving everything in the L1 cache. However, it is hard to use our metrics to appreciate the gain because we have very little execution time, in the order of $10^{-5}$. Moreover, LIKWID performs heavy approximation in its calculations. \\
-With $n= 400$, we get a run time of the order of $10^{-4}$. The idea is to artificially increase the flops in the $n=40$ case to achieve the same order of magnitude and be able to compare the two. We achieve the result by adding another for loop that does nothing, and enlarge the section of code that LIKWID analyzes. 
-By doing this, we get a better result for $n = 40$, even though $n = 400$ is still performing better. 
+With $n= 400$, we get a run time of the order of $10^{-4}$. 
+The idea is to artificially increase the flops in the $n=40$ case to be able to compare the two. We achieve the result by adding another for loop with $k=100$ that does nothing, and enlarge the section of code that LIKWID analyzes. 
+Without relying of LIKWID calculations, we get the following results: 
+\begin{itemize}
+\item \textbf{ n = 40}: 3975 MFlops/s
+\item \textbf{ n = 400}: 2896 MFlops/s
+\end{itemize}
+
+This result suggests that $n = 40$, when "normalized" with respect to $n = 400$ runs pretty fast. It is however important to keep in mind that the MFlops/s have been boosted by a large margin thanks to the added for loop which is inside the LIKWID counter.
 
 
 %CAPITOLO 6
@@ -353,8 +357,12 @@ By doing this, we get a better result for $n = 40$, even though $n = 400$ is sti
 \textbf{Open Multi-Processing} is an application programming interface that supports multi-platform shared memory multiprocessing. It is used for parallelism within a multi-core node.\\ It is based on threads, which are processes that can share memory. \\They communicate with each other via reading and writing shared data. 
 Each thread proceeds through program instructions independently of other threads, that means it is important to ensure that actions on shared variables occur in the correct order.\\\\
 In many applications, loops are the main source of parallelism. If the iterations can be done in any order, it is possible to share the iterations between threads, for instance: thread \#1 does the even iterations and thread \#2 does the odd. After the loop is done, we can merge together the result of the two loops. In theory, we managed to do the same task in half the time.\\\\
-I will run the naive code with $n = 50000$, $O3$ flag, with number of threads 1,2,4,6 to appreciate the difference in run time. Moreover, I will also analyze how LIKWID counts the run time using a double variable inside the code.\\\\ 
+I will run the naive code with $n = 50000$, $O3$ flag, with number of threads 1,2,4,6 to appreciate the difference in run time. Below, a graph showing the difference in run time and also how LIKWID calculates the run time:
+\begin{center}
+\includegraphics[width=10cm, height=8cm]{graficotimes}
+\end{center}
 
+More precision with the manual calculation was expected because it was performed at code level, without using external API's such as LIKWID.
 
 
 
