@@ -56,7 +56,7 @@
   \let\footnote\thanks
   \chapter*{\vspace{-3cm}\makebox[\linewidth]{\@title}}
   \begin{center}
-    \includegraphics[width=5cm]{logo}
+    \includegraphics[width=4.5cm]{logo}
     \vskip\dimexpr 7em-40\p@\relax%
     {\large \lineskip 0.4em%
      \textsc{Bachelor of Science in Mathematical Engineering}\\
@@ -69,7 +69,8 @@
     \noindent
     \parbox[t]{.5\textwidth}{\raggedright
     \large{Supervisors:}\\
-    \large{Prof. Stefano Berrone}}
+    \large{Prof. Stefano Berrone}\\
+    \large{Dr. Federico Tesser}}
     \hfill
     \parbox[t]{.3\textwidth}{\raggedleft
     \large Candidate:\\
@@ -347,7 +348,6 @@ Without relying of LIKWID calculations, we get the following results:
 \item \textbf{ n = 40}: 3975 MFlops/s
 \item \textbf{ n = 400}: 2896 MFlops/s
 \end{itemize}
-
 This result suggests that $n = 40$, when "normalized" with respect to $n = 400$ runs pretty fast. It is however important to keep in mind that the MFlops/s have been boosted by a large margin thanks to the added for loop which is inside the LIKWID counter.
 
 
@@ -357,14 +357,14 @@ This result suggests that $n = 40$, when "normalized" with respect to $n = 400$ 
 \textbf{Open Multi-Processing} is an application programming interface that supports multi-platform shared memory multiprocessing. It is used for parallelism within a multi-core node.\\ It is based on threads, which are processes that can share memory. \\They communicate with each other via reading and writing shared data. 
 Each thread proceeds through program instructions independently of other threads, that means it is important to ensure that actions on shared variables occur in the correct order.\\\\
 In many applications, loops are the main source of parallelism. If the iterations can be done in any order, it is possible to share the iterations between threads, for instance: thread \#1 does the even iterations and thread \#2 does the odd. After the loop is done, we can merge together the result of the two loops. In theory, we managed to do the same task in half the time.\\\\
-I will run the naive code with $n = 50000$, $O3$ flag, with number of threads 1,2,4,6 to appreciate the difference in run time. Below, a graph showing the difference in run time and also how LIKWID calculates the run time:
+OpenMP is called with a language construct named \textit{pragma}. Pragmas are used for the creation of the parallel region and for specifying the private variables inside such region. Below an example taken from the code:
+\lstinputlisting[style=CStyle]{pragma.c}
+The first pragma initializes the pragma region. The second one initializes the parallel for with private variables $i$ and $j$.
+The naive code is runwith $n = 50000$, $O3$ flag, with number of threads 1,2,4,6 to appreciate the difference in run time. Below, a graph showing the difference in run time and also how LIKWID calculates the run time:
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{graficotimes}
 \end{center}
-
 More precision with the manual calculation was expected because it was performed at code level, without using external API's such as LIKWID.
-
-
 
 \chapter{Future directions}
 There are still a few topics left to analyze in more detail. \\
