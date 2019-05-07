@@ -63,7 +63,7 @@
      \vskip 0.4cm
      \Large\textsc{Bachelor degree thesis}	\\
      \vskip 1cm
-     \Huge\textbf{Analysis of matrix vector product}
+     \Huge\textbf{Analysis and comparison of matrix vector multiplication codes}
      \begin{tabular}[t]{c}  \@author \end{tabular}\par}%
      \vskip 3cm
     \noindent
@@ -115,7 +115,7 @@ $$ result[i] = result[i] + A[i,j]*vector[i]$$
 The kernel is indeed very simple, so there is not much mathematical machinery that can be employed to speed up the calculation. \\
 However, I will show how to write the code in three different ways to extract as much as performance as we can from the hardware.\\\\
 When using the g++ compiler, we can set different optimization flags such as: O0, O1, O2 and O3. \\
-O$0$ is the default one, and no optimization is done. From here, the higher the number the better the compiler optimizes the code.\\
+O$0$ is the default one, and no optimization is done. From here, the higher the number the better the compiler tries to optimize the code.\\
 The code comparison will then be done with different optimization flags and different size of matrices. Changing the dimension of the matrix shows how much difference there is in saving values in the Cache versus memory.\\\\
 After that, I will address scalability by running the code in parallel using OpenMP.
 
@@ -126,9 +126,9 @@ By running a python script, I calculated that our bandwidth on average is: 6000 
 
 
 \section{LIKWID}
-LIKWID is a set of command line tools supporting software developers, benchmarkers and application users to get the best performance on a given system.
+LIKWID is a performance monitoring and benchmarking suite.
 One of the main tool is \textbf{likwid-perfctr}, that offers access to hardware performance counters and derives metrics from the raw counts. 
-By running likwid-perfctr, we can profile our code. The following image is an example of an output: 
+By running likwid-perfctr, we can benchmark our code. The following image is an example of an output: 
 
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{scree_lik_perf}
@@ -137,12 +137,12 @@ By running likwid-perfctr, we can profile our code. The following image is an ex
 A brief explanation of all the metrics: 
 
 \begin{itemize}
-\item{\textbf{RETIRED\_INSTRUCTIONS}: instructions completely executed between two clocktick event samples.}
+\item{\textbf{RETIRED\_INSTRUCTIONS}: instructions completely executed.}
 \item{\textbf{CPU\_CLOCKS\_UNHALTED}: number of cycles where CPU was not halted.}
 \item{\textbf{RETIRED\_UOPS}: number of low-level hardware operations.}
-\item{\textbf{RETIRED\_FLOPS\_DOUBLE\_ALL}: number of completely executed floating point operation per second  }
-\item{\textbf{Runtime (RDTSC) [s]}: counts the number of cycles since reset. }
-\item{\textbf{Runtime unhalted [s]}: counts the number of cycles since reset when CPU was not halted.}
+\item{\textbf{RETIRED\_FLOPS\_DOUBLE\_ALL}: number of completely executed floating point operation.}
+\item{\textbf{Runtime (RDTSC) [s]}: the runtime in seconds of the benchmarked section.}
+\item{\textbf{Runtime unhalted [s]}: the runtime in seconds of the benchmarked section, not considering the halted states of the cpu.}
 \item{\textbf{DP MFLOP/s}:  number of double precision MFLOP/s.}
 \item{\textbf{ CPI}: number of cycles per instruction retired.}
 \item{\textbf{CPI (based on uops)}: Calculation of CPI based on uops.}
@@ -169,7 +169,7 @@ Another picture with information on cache levels:\\
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{topology_2}
 \end{center}
-Lastly, likwid let us change the maximum and minimum frequency of our CPU. To have the least amount of oscillations when running our code, we set both at 2.6GHz, which is the maximum frequency allowed by our machine.
+Lastly, likwid let us change the maximum and minimum frequency of our CPU. To have the least amount of oscillations when running our code, they are both set at 2.6GHz, which is the maximum frequency allowed by our machine.
 
 \section{Hardware specifications}
 The Interlagos 12-core (for each socket) Opteron processor by AMD's. We  The cores are paired into "modules" which share a significant proportion of resources. The figure below gives an overview of which resources are shared between the two cores of a module. More information can be found here: \cite{interlagos}
@@ -185,13 +185,13 @@ Eigen is a library written in C++ which provides algorithms for fast matrix alge
 \section{Roof-line model}
 The Roofline model is a performance model used to provide estimates of a given computer kernel. 
 It can be visualized by plotting floating point performance as a function of arithmetic intensity. \\\\
-This model is used to determine the two main bottlenecks: bandwidth and algorithm's perfomance. It works under the assumption that data is already saved in cache and there  is no latency. It depends on empirical measurements, so it is inherently subject to error. 
+This model is used to determine the two main bottlenecks: bandwidth and algorithm's perfomance. It works under the assumption that data is "coming from the last level of memory and there is no latency. It depends on empirical measurements, so it is inherently subject to error. 
 It plots the performance of the code as dependent variable of computational intensity, below I will explain how to calculate such values using the tool described at the beginning of the chapter. 
 \\
-The peak performance can be calculated using the following formula, where $n$ is the number of cores, $F$ is the number of floating point instructions for cycle, $v$ is the clock speed and $S$ is the SIMDY feature, for now we are not concerned about this last term. 
-$$ P_{peak} = n * F * S * v $$ 
+The peak performance can be calculated using the following formula, where $n$ is the number of cores, $F$ is the number of floating point instructions for cycle, $v$ is the clock speed and $S$ is the SIMD feature, for now we are not concerned about this last term. 
+$$ P_{peak} = n * F * v $$ 
 We can also define the maximum performance reached by our machine with the following formula, where $f_{max}$ is the maximum frequency of the CPU of our machine, $\frac{n_{operations}}{n_{cycles}}$ is the number of operations per cycle. 
-$$P_{max} = f_{max} * \frac{n_{operations}}{n_{cycles}}$$ 
+$$P_{max} = f_{max} * \frac{n_{operations}}{n_{cycles}} * v$$ 
 In our case, the result is then just 2.6$\frac{Gflops}{s}$.
 However, this is just the theoretical limit: our performance P actually is: 
 $$ P = min(P_{max}, \text{Bandwidth} * \text{computational intensity}) $$
@@ -235,7 +235,7 @@ We can improve the code described in chapter two, introducing a temporary variab
 At first glance, It may seem we are just wasting precious cache space with another double variable but it turns out this change doubles the computational intensity with respect to the first algorithm. \\
 The key take away is that our kernel does not change even with the addition of the $\textit{tmp}$ variable: this time we can skip the fetching and loading of this variable, because when entering the second for loop it is already in the cache. This means that the computational intensity becomes $\frac{2}{16}\frac{Flops}{Bytes}$. 
 However, we still have not solved the pipeline's problem described in the previous chapter. \\
-This means that even though we doubled the computational intensity our bottleneck is still $P_{max}$ due to the coefficient $\frac{1}{8}$.  
+This means that even though we doubled the computational intensity our bottleneck is still $\frac{1}{8}$ of $P_{max}$.
 Nevertheless, by compiling the code we still manage to improve, as seen in chapter 5.
 
 
@@ -245,7 +245,7 @@ With this code, I finally manage to exploit the sum and product pipelines, thus 
 The code can be found below: 
 \lstinputlisting[style=CStyle]{loop_unrolling.c}
 The pipeline for the sum and multiplication is constantly filled with the trick of splitting the loop 4 by 4. It can be seen as a generalization of the code with the temporary variable. \\\\
-This time, the computational intensity is $\frac{32}{160}\frac{Flops}{Bytes}$. In the numerator we have 32 operations. In the denominator we get 160 by seeing that we fetch and load $(16+4)$ double elements, thus getting 160 bytes. 
+This time, the computational intensity is $\frac{32}{160}\frac{Flops}{Bytes}$. In the dividend we have 32 operations. In the divisor we get 160 by seeing that we fetch and load $(16+4)$ double elements, thus getting 160 bytes. 
 Then the operational intensity is $\frac{1}{5}\frac{Flops}{Bytes}$, multiplied by the Bandwidth we get 1.2 $\frac{Gflops}{s}$. 
 
 \section{Analysis of Assembly code} 
@@ -317,6 +317,16 @@ Below four tables that represent the data gathered from the simulation, every nu
  \hline
 \end{tabular}
 \end{center}
+Below, another table containing the theoretical performance $P[\frac{Gflops}{s}]$ achievable for each algorithm:
+\begin{center}
+\begin{tabular}{|c c c|} 
+ \hline
+ naive & with\_tmp & loop unrolling  \\ [0.5ex] 
+ \hline
+  0.325 &  0.325 & 1.2 \\ [0.5ex]
+ \hline
+\end{tabular}
+\end{center}
 Let's see what are the main takeaways from the data.\\
 For $n = 40$, Eigen struggles against our best implementation for every flag by a pretty significant margin. \\
 The code performs better with $n = 400$ than with $n = 40$, which seems strange at first because L1 cache should be faster than L2. However it seems to be a known issue that for dense matrix product the gcc compiler does not to exploit all the performance. I am going to analyze this issue in greater detail in the next section.\\\\
@@ -328,27 +338,30 @@ It is very interesting to see how much performance we gained from the first impl
 \includegraphics[width=10cm, height=8cm]{plotcolor}
 \end{center}
 \newpage
+
 \section{Roofline graph}
 The next graph shows the roof line model:
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{fig_ok}
 \end{center}
 Based on the model we chose, our performance should not have surpassed 1200$\frac{MFlops}{s}$. However our code reaches on average a maximum performance of 2935 $\frac{MFlops}{s}$ and Eigen a staggering 3429 $\frac{MFlops}{s}$. 
-However, the roof line model struggles to represent the gains made by exploiting cache levels. If we used the roofline cache aware model, seen in \cite{roofmdelcache} the model would have been closer to reality. 
-Moreover, even by setting the frequency of the CPU to a constant value, it still fluctuates a bit because of the \textit{Turbo Boost} feature of our hardware. 
-Basically, the operating system may decide to up the frequency of the CPU for a short time if it is deemed useful for the task at hand.
+The results are different from expected probably because in the first memory levels the roofline is imprecise. 
+Moreover, the operating system may decide to up the frequency of the CPU for a short time if it is deemed useful for the task at hand. 
 \newpage
-\section{In-depth analysis of $n = 40$ performance}
 
-With $ n = 40$, we have the big advantage of saving everything in the L1 cache. However, it is hard to use our metrics to appreciate the gain because we have very little execution time, in the order of $10^{-5}$. Moreover, LIKWID performs heavy approximation in its calculations. \\
-With $n= 400$, we get a run time of the order of $10^{-4}$. 
-The idea is to artificially increase the flops in the $n=40$ case to be able to compare the two. We achieve the result by adding another for loop with $k=100$ that does nothing, and enlarge the section of code that LIKWID analyzes. 
-Without relying of LIKWID calculations, we get the following results: 
+\section{In-depth analysis of $n = 40$ performance}
+With $ n = 40$, we have the big advantage of saving everything in the L1 cache. However, it is hard to use our metrics to appreciate the gain because we have very small execution time, in the order of $10^{-5}$. Moreover, LIKWID performs heavy approximation in its calculations. \\
+I addressed this problem with two changes: 
 \begin{itemize}
-\item \textbf{ n = 40}: 3975 MFlops/s
-\item \textbf{ n = 400}: 2896 MFlops/s
+\item Artificially increase the execution time with another for loop which does not perform any additional operation.
+\item Self made calculation of MFlop/s to avoid unwanted approximations. 
 \end{itemize}
-This result suggests that $n = 40$, when "normalized" with respect to $n = 400$ runs pretty fast. It is however important to keep in mind that the MFlops/s have been boosted by a large margin thanks to the added for loop which is inside the LIKWID counter.
+Even with these changes, we get the following results when running the code with $O3$ flag:
+\begin{itemize}
+\item \textbf{n = 40 k = 100}: 3913 MFlops/s
+\item \textbf{n = 400 k = 1}: 3650 MFlops/s
+\end{itemize}
+The number of MFlops/s obtained is too large, even accounting for turbo boost capabilities. \\The problem stems for the fact that increasing the number of operations does not scale well with the matrix dimension change, even though it approximately should. \\This problem still remains open, and further investigations should be made, even regarding the behaviour of the compiler with small dense matrices. 
 
 
 %CAPITOLO 6
@@ -364,12 +377,12 @@ The naive code is runwith $n = 50000$, $O3$ flag, with number of threads 1,2,4,6
 \begin{center}
 \includegraphics[width=10cm, height=8cm]{graficotimes}
 \end{center}
-More precision with the manual calculation was expected because it was performed at code level, without using external API's such as LIKWID.
-
+The time calculated manually at code level is way more precise than the one calculated using LIKWID API's. 
+The reason for this is that calling LIKWID marker functions adds unwanted complexity to the kernel, thus registering a much higher time. 
 \chapter{Future directions}
 There are still a few topics left to analyze in more detail. \\
 First of all, we should investigate how changing the roof line model to the cache aware roof line model alters the expected result. \\\\
-Then, we could also employ SIMD vectorization. The idea is to exploit data level parallelism: performing the same operation on multiple data point simultaneously. The GCC compiler already tries to vectorize wherever it is possible, however the code should be rewritten with this idea in mind. \\\\
+Then, we could also employ SIMD vectorization. The idea is to exploit data level parallelism: performing the same operation on multiple data point simultaneously. The GCC compiler already tries to vectorize wherever it is possible but sometimes it is better to explicitly write the operations to exploit the single instruction multiple data paradigm. \\\\
 Lastly, it would be very interesting to further analyze how GCC behaves with matrix contained in the L1 cache.
 Closed source compilers like Intel's are expected to perform better in this situation. \\\\
 Still, we managed to show that the most sophisticated implementation of the kernel significantly outperfmorms Eigen's with $n = 40$, independently of the chosen flag. The same can be said when $n = 400$ and $O2$ flag is chosen.

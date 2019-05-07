@@ -6,7 +6,7 @@
 \usepackage{amsmath}
 \usepackage{listings}
 %Information to be included in the title page:
-\title {Analysis of dense matrix vector multiplication}
+\title {Analysis and comparison of matrix vector multiplication codes}
 \author % (optional, for multiple authors)
 {Ludovico Bessi}
  
@@ -35,29 +35,29 @@
 \begin{frame}
 \frametitle{Introduction}
 \begin{itemize}
- \item<1-> Kernel: result[i] = result[i] + A[i,j]$*$vector[i]
- \item<2-> Matrix size changing: $n_1 = 40$, $n_2 = 400$, $n_3 = 1000$
- \item<3-> Different optimization flags 
- \item <4-> What is Eigen? How to change the kernel to match its performance?
+ \item Kernel: result[i] = result[i] + A[i,j]$*$vector[i]
+ \item Matrix size changing: $n_1 = 40$, $n_2 = 400$, $n_3 = 1000$
+ \item Different optimization flags 
+ \item What is Eigen? How to change the kernel to match its performance?
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Tools}
 \begin{itemize}
-\item <1-> Stream $\to$ Bandwidth 6000 MB/s
-\item <2-> LIKWID: topology and perfctr
-\item <3-> Hardware: Interlagos 12-core Opteron processor.
+\item  Stream $\to$ Bandwidth 6000 MB/s
+\item LIKWID: topology and perfctr
+\item Hardware: Interlagos 12-core Opteron processor.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Roofline model}
 \begin{itemize}
-\item <1-> Performance model used to determine bottlenecks: bandwidth and algorithm performance.
-\item <2-> $P_{max}$ = $f_{max} * \frac{n_{operations}}{n_{cycles}}$
-\item <3-> $P = min(P_{max}, \text{Bandwidth} * \text{Computational intensity})$
-\item <4-> Computational intensity is algorithm dependent, the main focus is to maximize it.
+\item  Performance model used to determine bottlenecks: bandwidth and algorithm performance.
+\item  $P_{max}$ = $f_{max} * \frac{n_{operations}}{n_{cycles}} * v$
+\item  $P = min(P_{max}, \text{Bandwidth} * \text{Computational intensity})$
+\item  Computational intensity is algorithm dependent, the main focus is to maximize it.
 \end{itemize}
 \end{frame}
 
@@ -68,28 +68,28 @@
 \begin{frame}
 \frametitle{Naive}
 \begin{itemize}
-\item <1-> Simplest possible code, useful for benchmark.
-\item <2-> $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$, not exploiting pipelines of sum and product
-\item <3-> Computational intensity = $\frac{2}{32}\frac{Flops}{Bytes}$
+\item  Simplest possible code, useful for benchmark.
+\item  $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$, not exploiting pipelines of sum and product
+\item  Computational intensity = $\frac{2}{32}\frac{Flops}{Bytes}$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Temporary variable}
 \begin{itemize}
-\item <1->  Additional temporary variable in outer loop to speed up cache lookup
-\item <2-> $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$, still not exploiting pipelines of sum and product
-\item <3-> Computational intensity = $\frac{2}{16}\frac{Flops}{Bytes}$
+\item Additional temporary variable in outer loop to speed up cache lookup
+\item  $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$, still not exploiting pipelines of sum and product
+\item Computational intensity = $\frac{2}{16}\frac{Flops}{Bytes}$
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Loop unrolling}
 \begin{itemize}
-\item <1->  Manually split two loops four by four to exploit pipelines of sum and product
-\item <2-> $P_{max} =2.6\frac{Gflops}{s}$ 
-\item <3-> Computational intensity = $\frac{32}{160}\frac{Flops}{Bytes}$
-\item <4-> Peaked at assembly code to understand inner functionalities 
+\item Manually split two loops four by four to exploit pipelines of sum and product
+\item $P_{max} =2.6\frac{Gflops}{s}$ 
+\item Computational intensity = $\frac{32}{160}\frac{Flops}{Bytes}$
+\item Peaked at assembly code to understand inner functionalities 
 \end{itemize}
 \end{frame}
 
@@ -98,7 +98,7 @@
 \begin{frame}
 \frametitle{Comparing the Mflops/s}
 \begin{center}
-\scalebox{0.7}{
+\scalebox{0.65}{
  \begin{tabular}{|c c c c c |} 
  \hline
  O0 & naive   & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
@@ -115,7 +115,7 @@
 
 
 \begin{center}
-\scalebox{0.7}{
+\scalebox{0.65}{
  \begin{tabular}{|c c c c c |} 
  \hline
  O1 & naive & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
@@ -131,7 +131,7 @@
 \end{center}
 
 \begin{center}
-\scalebox{0.7}{
+\scalebox{0.65}{
  \begin{tabular}{|c c c c c |} 
  \hline
  O2 & naive & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
@@ -147,7 +147,7 @@
 \end{center}
 
 \begin{center}
-\scalebox{0.7}{
+\scalebox{0.65}{
  \begin{tabular}{|c c c c c |} 
  \hline
  O3 & naive & with\_tmp & loop unrolling & eigen \\ [0.5ex] 
@@ -180,9 +180,9 @@
 \begin{frame}
 \frametitle{What is OMP?}
 \begin{itemize}
-\item <1-> API that supports multi-platform shared memory multiprocessing.
-\item <2-> Used for parallelism within a multi-core node.
-\item <3-> Based on threads: processes that can share memory.
+\item API that supports multi-platform shared memory multiprocessing.
+\item Used for parallelism within a multi-core node.
+\item Based on threads: processes that can share memory.
 \end{itemize}
 \end{frame}
 
@@ -198,8 +198,8 @@ With $n = 50000$, $O3$ flag and different number of threads:
 \begin{frame}
 \frametitle{Achievements}
 \begin{itemize}
- \item<1-> Outperformed Eigen when $n = 40$
- \item<2-> Outperformed Eigen when $n = 400$ and $O2$ flag.
+ \item Outperformed Eigen when $n = 40$
+ \item Outperformed Eigen when $n = 400$ and $O2$ flag.
 \end{itemize}
  \end{frame}
  
@@ -207,9 +207,9 @@ With $n = 50000$, $O3$ flag and different number of threads:
 \frametitle{Future directions}
 
 \begin{itemize}
- \item<1-> Cache aware roof line model
- \item<2-> SIMD vectorization
- \item<3-> Understanding GCC behaviour when matrix is saved in L1
+ \item Cache aware roof line model
+ \item SIMD vectorization
+ \item Understanding GCC behaviour when matrix is saved in L1
 \end{itemize}
 \end{frame}
 
