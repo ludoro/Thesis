@@ -7,5 +7,5 @@ eigen = [455, 2297, 1958];
 plot(n,naive,'-o',n,tmp,'-d',n,loop,'-d',n,eigen,'-d');
 xlim([0 1200])
 xlabel('n');
-ylabel('Performance MFLOPS/s');
+ylabel('Performance MFLOPS/s, O2 flag');
 legend('naive','temporary','loop unrolling', 'Eigen');

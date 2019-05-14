@@ -1,4 +1,15 @@
+\frametitle{Temporary variable}
+\begin{center}
 \begin{lstlisting}
-       int a = 5;
-       b = a+3;
-   \end{lstlisting}
+       for i = 1:n
+       tmp = result[i]
+       	for j = 1:n
+	  tmp = tmp + A[i,j]*v[j]
+	result[i] = tmp
+\end{lstlisting}
+\end{center}
+\begin{itemize}
+\item Additional temporary variable in outer loop to speed up cache lookup
+\item  $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$
+\item Computational intensity = $\frac{2}{16}\frac{Flops}{Bytes}$
+\end{itemize}

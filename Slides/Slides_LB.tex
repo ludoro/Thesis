@@ -1,10 +1,12 @@
 \documentclass{beamer}
- 
 \usepackage[utf8]{inputenc}
 \usetheme{Berlin}
 \usecolortheme{wolverine}
 \usepackage{amsmath}
 \usepackage{listings}
+\lstset{
+   basicstyle=\fontsize{10}{13}\selectfont\ttfamily
+}
 %Information to be included in the title page:
 \title {Analysis and comparison of matrix vector multiplication codes}
 \author % (optional, for multiple authors)
@@ -17,7 +19,6 @@
   Politecnico di Torino
 }
 \date{May 2019}
- 
 
 
 \begin{document}
@@ -35,7 +36,7 @@
 \begin{frame}
 \frametitle{Introduction}
 \begin{itemize}
- \item Kernel: result[i] = result[i] + A[i,j]$*$vector[i]
+ \item Kernel: result[i] = result[i] + A[i,j]$*$vector[j]
  \item Matrix size changing: $n_1 = 40$, $n_2 = 400$, $n_3 = 1000$
  \item Different optimization flags 
  \item What is Eigen? How to change the kernel to match its performance?
@@ -53,20 +54,31 @@
 
 \begin{frame}
 \frametitle{Roofline model}
+
+
 \begin{itemize}
-\item  Performance model used to determine bottlenecks: bandwidth and algorithm performance.
+\item  Bottlenecks: CPU bound vs memory bound
 \item  $P_{max}$ = $f_{max} * \frac{n_{operations}}{n_{cycles}} * v$
 \item  $P = min(P_{max}, \text{Bandwidth} * \text{Computational intensity})$
-\item  Computational intensity is algorithm dependent, the main focus is to maximize it.
 \end{itemize}
+
+
+
+
 \end{frame}
 
 
 %Seconda sezione
 \section{Different implementations}
-
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Naive}
+\begin{center}
+\begin{lstlisting}
+       for i = 1:n
+       	for j = 1:n 
+	  result[i] = result[i] + A[i,j]*v[j]
+\end{lstlisting}
+\end{center}
 \begin{itemize}
 \item  Simplest possible code, useful for benchmark.
 \item  $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$, not exploiting pipelines of sum and product
@@ -74,11 +86,20 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Temporary variable}
+\begin{center}
+\begin{lstlisting}
+       for i = 1:n
+       tmp = result[i]
+       	for j = 1:n 
+	  tmp = tmp + A[i,j]*v[j]
+	result[i] = tmp
+\end{lstlisting}
+\end{center}
 \begin{itemize}
 \item Additional temporary variable in outer loop to speed up cache lookup
-\item  $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$, still not exploiting pipelines of sum and product
+\item  $P_{max} = \frac{2.6}{8}\frac{Gflops}{s}$
 \item Computational intensity = $\frac{2}{16}\frac{Flops}{Bytes}$
 \end{itemize}
 \end{frame}
@@ -89,7 +110,6 @@
 \item Manually split two loops four by four to exploit pipelines of sum and product
 \item $P_{max} =2.6\frac{Gflops}{s}$ 
 \item Computational intensity = $\frac{32}{160}\frac{Flops}{Bytes}$
-\item Peaked at assembly code to understand inner functionalities 
 \end{itemize}
 \end{frame}
 
@@ -189,7 +209,9 @@
 \begin{frame}
 \frametitle{Case study}
 With $n = 50000$, $O3$ flag and different number of threads: 
+\begin{center}
 \includegraphics[width=8cm, height=6cm]{graficotimes}
+\end{center}
 \end{frame}
 
 %Quinta sezione
