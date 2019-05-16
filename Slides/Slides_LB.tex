@@ -54,8 +54,6 @@
 
 \begin{frame}
 \frametitle{Roofline model}
-
-
 \begin{itemize}
 \item  Bottlenecks: CPU bound vs memory bound
 \item  $P_{max}$ = $f_{max} * \frac{n_{operations}}{n_{cycles}} * v$
@@ -85,6 +83,11 @@
 \item  Computational intensity = $\frac{2}{32}\frac{Flops}{Bytes}$
 \end{itemize}
 \end{frame}
+\begin{frame}
+\begin{figure}
+\includegraphics[scale=0.25]{roof_naive}
+\end{figure}
+\end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Temporary variable}
@@ -103,7 +106,11 @@
 \item Computational intensity = $\frac{2}{16}\frac{Flops}{Bytes}$
 \end{itemize}
 \end{frame}
-
+\begin{frame}
+\begin{figure}
+\includegraphics[scale=0.25]{roof_tmp}
+\end{figure}
+\end{frame}
 \begin{frame}
 \frametitle{Loop unrolling}
 \begin{itemize}
@@ -111,6 +118,12 @@
 \item $P_{max} =2.6\frac{Gflops}{s}$ 
 \item Computational intensity = $\frac{32}{160}\frac{Flops}{Bytes}$
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\includegraphics[scale=0.25]{fig_ok}
+\end{figure}
 \end{frame}
 
 %Terza sezione
@@ -186,11 +199,6 @@
 \begin{frame}
 \frametitle{Data visualization}
 \includegraphics[width=10cm, height=7cm]{plotcolor}
-\end{frame}
-
-\begin{frame}
-\frametitle{Roofline graph}
-\includegraphics[width=10cm, height=7cm]{fig_ok}
 \end{frame}
 
 

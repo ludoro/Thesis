@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.10.22)  14 MAY 2019 15:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.10.22)  16 MAY 2019 08:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -910,34 +910,44 @@ thkerncmss.
  (./Slides_LB.vrb) [6
 
 ]
-\openout4 = `Slides_LB.vrb'.
+<roof_naive.jpg, id=366, 1124.2pt x 843.15pt>
+File: roof_naive.jpg Graphic file (type jpg)
+<use roof_naive.jpg>
+Package pdftex.def Info: roof_naive.jpg  used on input line 90.
+(pdftex.def)             Requested size: 281.04932pt x 210.78697pt.
 
- (./Slides_LB.vrb) [7
-
-] [8
-
-] [9
-
-]
-<plotcolor.jpg, id=474, 1124.2pt x 843.15pt>
-File: plotcolor.jpg Graphic file (type jpg)
-<use plotcolor.jpg>
-Package pdftex.def Info: plotcolor.jpg  used on input line 189.
-(pdftex.def)             Requested size: 284.51439pt x 199.16951pt.
-
-Overfull \vbox (7.6918pt too high) detected at line 189
+Overfull \vbox (0.89986pt too high) detected at line 90
  []
 
-[10
+[7
 
- <./plotcolor.jpg>]
-<fig_ok.jpg, id=518, 1124.2pt x 843.15pt>
+ <./roof_naive.jpg>]
+\openout4 = `Slides_LB.vrb'.
+
+ (./Slides_LB.vrb) [8
+
+]
+<roof_tmp.jpg, id=461, 1124.2pt x 843.15pt>
+File: roof_tmp.jpg Graphic file (type jpg)
+<use roof_tmp.jpg>
+Package pdftex.def Info: roof_tmp.jpg  used on input line 113.
+(pdftex.def)             Requested size: 281.04932pt x 210.78697pt.
+
+Overfull \vbox (0.89986pt too high) detected at line 113
+ []
+
+[9
+
+ <./roof_tmp.jpg>] [10
+
+]
+<fig_ok.jpg, id=555, 1124.2pt x 843.15pt>
 File: fig_ok.jpg Graphic file (type jpg)
 <use fig_ok.jpg>
-Package pdftex.def Info: fig_ok.jpg  used on input line 194.
-(pdftex.def)             Requested size: 284.51439pt x 199.16951pt.
+Package pdftex.def Info: fig_ok.jpg  used on input line 127.
+(pdftex.def)             Requested size: 281.04932pt x 210.78697pt.
 
-Overfull \vbox (7.6918pt too high) detected at line 194
+Overfull \vbox (0.89986pt too high) detected at line 127
  []
 
 [11
@@ -945,20 +955,34 @@ Overfull \vbox (7.6918pt too high) detected at line 194
  <./fig_ok.jpg>] [12
 
 ]
-<graficotimes.jpg, id=606, 1124.2pt x 843.15pt>
-File: graficotimes.jpg Graphic file (type jpg)
-<use graficotimes.jpg>
-Package pdftex.def Info: graficotimes.jpg  used on input line 215.
-(pdftex.def)             Requested size: 227.61494pt x 170.7112pt.
+<plotcolor.jpg, id=649, 1124.2pt x 843.15pt>
+File: plotcolor.jpg Graphic file (type jpg)
+<use plotcolor.jpg>
+Package pdftex.def Info: plotcolor.jpg  used on input line 202.
+(pdftex.def)             Requested size: 284.51439pt x 199.16951pt.
 
-Overfull \vbox (2.96266pt too high) detected at line 215
+Overfull \vbox (7.6918pt too high) detected at line 202
  []
 
 [13
 
- <./graficotimes.jpg>] [14
+ <./plotcolor.jpg>] [14
 
-] [15
+]
+<graficotimes.jpg, id=744, 1124.2pt x 843.15pt>
+File: graficotimes.jpg Graphic file (type jpg)
+<use graficotimes.jpg>
+Package pdftex.def Info: graficotimes.jpg  used on input line 223.
+(pdftex.def)             Requested size: 227.61494pt x 170.7112pt.
+
+Overfull \vbox (2.96266pt too high) detected at line 223
+ []
+
+[15
+
+ <./graficotimes.jpg>] [16
+
+] [17
 
 ]
 \tf@nav=\write6
@@ -970,35 +994,38 @@ Overfull \vbox (2.96266pt too high) detected at line 215
 \tf@snm=\write8
 \openout8 = `Slides_LB.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 238.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 238.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 246.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 246.
  (./Slides_LB.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 238.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 238.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 246.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 246.
 Package rerunfilecheck Info: File `Slides_LB.out' has not changed.
 (rerunfilecheck)             Checksum: 3C27C5B0B8CD5C33F4B7ABE09DFFAD5B;265.
  ) 
 Here is how much of TeX's memory you used:
- 18704 strings out of 492649
- 349885 string characters out of 6129621
- 444673 words of memory out of 5000000
- 22137 multiletter control sequences out of 15000+600000
+ 18725 strings out of 492649
+ 350151 string characters out of 6129621
+ 449216 words of memory out of 5000000
+ 22151 multiletter control sequences out of 15000+600000
  10863 words of font info for 40 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  56i,19n,67p,803b,1109s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><
-/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></
-usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></u
-sr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr
-/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr
-/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/
-local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/l
-ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on Slides_LB.pdf (15 pages, 266416 bytes).
+pdfTeX warning (dest): name{Navigation18} has been referenced but does not ex
+ist, replaced by a fixed one
+
+</usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></u
+sr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></us
+r/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr
+/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/l
+ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/l
+ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/lo
+cal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/loc
+al/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on Slides_LB.pdf (17 pages, 354543 bytes).
 PDF statistics:
- 778 PDF objects out of 1000 (max. 8388607)
- 716 compressed objects within 8 object streams
- 36 named destinations out of 1000 (max. 500000)
- 98 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 927 PDF objects out of 1000 (max. 8388607)
+ 857 compressed objects within 9 object streams
+ 41 named destinations out of 1000 (max. 500000)
+ 108 words of extra memory for PDF output out of 10000 (max. 10000000)
 
